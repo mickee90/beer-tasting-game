@@ -1,9 +1,7 @@
 <template>
   <div id="app">
-    <div class="placeholder">
-      <img src="/img/beer.jpg" alt />
-      <div>Need a beer tasting game? Hold my beer...</div>
-    </div>
+    <!-- <app-nav></app-nav> -->
+    <router-view :key="$route.fullPath" />
   </div>
 </template>
 
@@ -17,12 +15,5 @@
   height: 100vh;
   display: flex;
   width: 100vw;
-}
-
-.placeholder {
-  margin: auto;
-}
-.placeholder img {
-  width: 300px;
 }
 </style>
