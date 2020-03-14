@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <!-- <app-nav></app-nav> -->
-    <router-view :key="$route.fullPath" />
+    <div class="max-w-lg m-auto py-16">
+      <!-- <app-nav></app-nav> -->
+      <router-view :key="$route.fullPath" />
+    </div>
   </div>
 </template>
 

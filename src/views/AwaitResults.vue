@@ -2,8 +2,8 @@
   <div class="hero">
     <h1>Waiting for the results</h1>
     <div>
-      Waiting for the game master to collect the answers. <br />
-      Let's have a beer while waiting
+      Waiting for the game master to collect the answers.
+      <br />Let's have a beer while waiting
     </div>
 
     <div>

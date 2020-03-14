@@ -1,5 +1,5 @@
 <template>
-  <div class="hero">
+  <div>
     <h1>The beer tasting game!</h1>
     <div v-if="backdoor">
       <router-link :to="{ name: 'create' }">Start a new game!</router-link>
@@ -11,24 +11,27 @@
     <div>
       What's this all about?
       <br />
-      <br />- This is a game where one person (the "game master") buys and set
-      up a beer tasting without the players knowing which beers they are
-      drinking.
+      <br />
+      <i>
+        The Beer Tasting game starts with one person (the "game master") buys and set
+        up a beer tasting without the players knowing which beers they are
+        drinking.
+      </i>
       <br />
       <br />
 
-      <ul>
-        <li>Pick one game master who buys X amount of beers.</li>
-        <li>
+      <ul class="list-disc">
+        <li class="mb-2">Pick one game master who buys X amount of beers.</li>
+        <li class="mb-2">
           The game master creates a game by entering the name, the beers and
           game type.
         </li>
-        <li>
+        <li class="mb-2">
           Then sends an invite to the players by sharing a link, or let them
           scan the barcode provided.
         </li>
-        <li>The players join the game and the beer tasting can begin!</li>
-        <li>
+        <li class="mb-2">The players join the game and the beer tasting can begin!</li>
+        <li class="mb-2">
           When all beer have been tasted and registrated, the game is over and
           the players will end up on a scoreboard
         </li>
@@ -51,13 +54,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.hero {
-  margin: auto;
-  max-width: 500px;
-}
-.hero img {
-  width: 300px;
-}
-</style>
