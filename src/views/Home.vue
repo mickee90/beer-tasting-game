@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>The beer tasting game!</h1>
-    <div v-if="backdoor">
-      <router-link :to="{ name: 'create' }">Start a new game!</router-link>
+    <div v-if="backdoor" class="mb-4">
+      <router-link :to="{ name: 'create' }" class="btn btn-blue">Start a new game!</router-link>
     </div>
     <div v-else>
       <h3>This site will hopefully be ready soon...</h3>

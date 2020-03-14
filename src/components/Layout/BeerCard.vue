@@ -24,6 +24,3 @@ export default {
   props: ["header", "img", "country"]
 };
 </script>
-
-<style>
-</style>

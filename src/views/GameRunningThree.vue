@@ -1,72 +1,43 @@
 <template>
-  <div class="hero">
+  <div>
     <h1>Beer #3</h1>
+    <h2 class="underline">The beer guru</h2>
+    <div class="mb-8">
+      <card header="Name the beer!">
+        <input
+          type="text"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center"
+          placeholder="Name"
+        />
+      </card>
+
+      <card header="What type of beer is it?">
+        <input
+          type="text"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center"
+          placeholder="Type"
+        />
+      </card>
+
+      <card header="Which brewery brews it?">
+        <input
+          type="text"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center"
+          placeholder="Brewery"
+        />
+      </card>
+    </div>
     <div>
-      <label for="beerSearch">The beer guru</label>
-      <br />
-      <br />
-      <div class="players">
-        <div class="card">
-          <div class="card-header">Name the beer!</div>
-          <div class="card-body">
-            <input type="text" placeholder="Name" />
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">What type of beer is it?</div>
-          <div class="card-body">
-            <input type="text" placeholder="Type" />
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">Which brewery brews it?</div>
-          <div class="card-body">
-            <input type="text" placeholder="Brewery" />
-          </div>
-        </div>
-      </div>
-      <div>
-        <router-link :to="{ name: 'AwaitResults' }">Next</router-link>
-      </div>
+      <router-link :to="{ name: 'AwaitResults' }" class="btn btn-blue">Next</router-link>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import Card from "../components/Layout/Card";
+export default {
+  components: {
+    Card
+  }
+};
 </script>
-
-<style>
-.chosenBeers {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-.card {
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-.card-header {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-}
-.card-body {
-  margin-bottom: 10px;
-}
-
-.card img {
-  max-width: 100%;
-  display: block;
-  height: auto;
-  margin: auto;
-}
-
-.col-4 {
-  width: 33%;
-  display: inline-block;
-}
-.col-8 {
-  width: 66%;
-  display: inline-block;
-}
-</style>

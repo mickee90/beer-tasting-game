@@ -18,6 +18,3 @@ export default {
   props: ["header"]
 };
 </script>
-
-<style>
-</style>

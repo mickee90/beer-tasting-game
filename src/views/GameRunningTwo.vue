@@ -1,16 +1,15 @@
 <template>
-  <div class="hero">
+  <div>
     <h1>Beer #2</h1>
+    <label class="block">
+      <span class="text-gray-700">How does it taste?</span>
+      <textarea
+        rows="5"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+      ></textarea>
+    </label>
     <div>
-      <label for="beerSearch">How does it taste?</label>
-      <br />
-      <br />
-      <div>
-        <textarea cols="30" rows="10"> </textarea>
-      </div>
-      <div>
-        <router-link :to="{ name: 'GameRunningThree' }">Next</router-link>
-      </div>
+      <router-link :to="{ name: 'GameRunningThree' }" class="btn btn-blue">Next</router-link>
     </div>
   </div>
 </template>
@@ -18,38 +17,3 @@
 <script>
 export default {};
 </script>
-
-<style>
-.chosenBeers {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-.card {
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-.card-header {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-}
-.card-body {
-  margin-bottom: 10px;
-}
-
-.card img {
-  max-width: 100%;
-  display: block;
-  height: auto;
-  margin: auto;
-}
-
-.col-4 {
-  width: 33%;
-  display: inline-block;
-}
-.col-8 {
-  width: 66%;
-  display: inline-block;
-}
-</style>
