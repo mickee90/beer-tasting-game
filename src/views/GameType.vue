@@ -2,31 +2,69 @@
   <div>
     <h1>Choose game type</h1>
 
-    <beer-type-card header="Similar beers">
-      The players will receive an image and description of 2 similar beers and
-      the correct one for each beer you have registered.
+    <beer-type-card header="Match with description">
+      The players will receive the description of each beer and then try to
+      match them while tasting the beers
     </beer-type-card>
 
-    <beer-type-card header="Flavors">
-      The players has to describe the flavors of each beer. You as the game
-      master has to set the score based on the description of the beer when
-      everyone is done.
+    <beer-type-card header="Pick one option">
+      The game master enter a question and 2-4 answer alternatives for each
+      beer.
+      <br />E.g "What type of beer is this?"
+      <ul>
+        <li>1. Lager</li>
+        <li>2. IPA</li>
+        <li>3. Porter</li>
+        <li>4. Sour</li>
+      </ul>
     </beer-type-card>
 
-    <beer-type-card header="Beer gurus">
-      The players shall enter the name of the beer, type of beer and the
-      brewery. i.e. they can get 3 points per beer
-    </beer-type-card>
-
-    <div>
-      <router-link :to="{ name: 'ChooseBeers' }" class="btn btn-blue">Next</router-link>
-    </div>
+    <button
+      class="btn btn-blue btn:disabled"
+      :disabled="disabled"
+      @click.prevent="onChooseGameType"
+    >
+      Next
+    </button>
   </div>
 </template>
 
 <script>
 import BeerTypeCard from "../components/Layout/BeerTypeCard";
 export default {
+  data() {
+    return {
+      gameTypeId: 1
+    };
+  },
+  methods: {
+    onChooseGameType() {
+      const game = this.$store.getters.getGame;
+
+      console.log(game, this.gameTypeId);
+
+      if (game.id === null || this.gameTypeId === null) {
+        alert("Somethings wrong. Please try again");
+        return;
+      }
+
+      const response = this.$store.dispatch("updateGame", {
+        game_type_id: this.gameTypeId
+      });
+
+      if (!response) {
+        alert("Something went wrong. Try again");
+        return;
+      }
+
+      this.$router.push({ name: "ChooseBeers" });
+    }
+  },
+  computed: {
+    disabled() {
+      return !(this.gameTypeId > 0);
+    }
+  },
   components: {
     BeerTypeCard
   }

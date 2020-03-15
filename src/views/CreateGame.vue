@@ -2,18 +2,22 @@
   <div>
     <h1>Create a new game</h1>
     <div class="mb-6">
-      <label for="gameTitle" class="block text-gray-700 font-bold mb-2">Enter the name of the game</label>
+      <label for="gameName" class="block text-gray-700 font-bold mb-2"
+        >Enter the name of the game</label
+      >
       <input
         type="text"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="gameTitle"
-        v-model="title"
+        id="gameName"
+        v-model="name"
         placeholder="Name the game"
         required
       />
     </div>
     <div class="mb-6">
-      <label for="gameMasterName" class="block text-gray-700 font-bold mb-2">Enter your name</label>
+      <label for="gameMasterName" class="block text-gray-700 font-bold mb-2"
+        >Enter your name</label
+      >
       <input
         type="text"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -23,14 +27,13 @@
         required
       />
     </div>
-    <div>
-      <button
-        class="btn btn-blue btn:disabled"
-        :disabled="disabled"
-        @click.prevent="onStoreGame"
-      >Next</button>
-      <!-- <router-link :to="{ name: 'GameType' }" class="btn btn-blue">Next</router-link> -->
-    </div>
+    <button
+      class="btn btn-blue btn:disabled"
+      :disabled="disabled"
+      @click.prevent="onStoreGame"
+    >
+      Next
+    </button>
   </div>
 </template>
 
@@ -38,22 +41,22 @@
 export default {
   data() {
     return {
-      title: "",
+      name: "",
       game_master_name: ""
     };
   },
   computed: {
     disabled() {
-      return this.title.trim() === "" || this.game_master_name.trim() === "";
+      return this.name.trim() === "" || this.game_master_name.trim() === "";
     }
   },
   methods: {
-    onStoreGame() {
-      const response = this.$store.dispatch("storeGame", {
-        title: this.title,
+    async onStoreGame() {
+      const response = await this.$store.dispatch("createGame", {
+        name: this.name,
         game_master_name: this.game_master_name
       });
-
+      console.log(response);
       if (!response) {
         alert("Something went wrong. Try again");
         return;
@@ -61,6 +64,10 @@ export default {
 
       this.$router.push({ name: "GameType" });
     }
+  },
+  created() {
+    this.name = this.$store.getters.getGame.name ?? "";
+    this.game_master_name = this.$store.getters.getGame.game_master_name ?? "";
   }
 };
 </script>
