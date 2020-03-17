@@ -12,7 +12,20 @@
           id="beerSearch"
           placeholder="Type the beer name"
           required
+          v-model="searchWord"
+          @keyup.enter="onSearch"
         />
+
+        <div v-if="beerSearchResult !== null">
+          <SearchBeerCard
+            v-for="item in beerSearchResult"
+            :key="item.beer.bid"
+            :beer="item.beer"
+            :brewery="item.brewery"
+            :add="true"
+            @addBeer="onAddedBeer"
+          />
+        </div>
       </div>
 
       <div
@@ -24,12 +37,12 @@
       <button class="btn btn-gray">Scan barcode</button>
 
       <div class="py-16">
-        <beer-card
+        <chosen-beer-card
           v-for="beer in beers"
           :key="beer.id"
           :beer="beer"
           @delete="onDelete"
-        ></beer-card>
+        ></chosen-beer-card>
       </div>
       <button
         class="btn btn-blue btn:disabled"
@@ -43,12 +56,15 @@
 </template>
 
 <script>
-import BeerCard from "../components/Layout/BeerCard";
-import { beers } from "../mock-data/beers";
+import SearchBeerCard from "../components/Layout/SearchBeerCard";
+import ChosenBeerCard from "../components/Layout/ChosenBeerCard";
+import axios from "../axios/axiosUntappd";
 
 export default {
   data() {
     return {
+      searchWord: "",
+      beerSearchResult: null,
       beers: []
     };
   },
@@ -56,6 +72,32 @@ export default {
     onDelete(id) {
       const index = this.beers.findIndex(beer => beer.id === id);
       this.beers.splice(index, 1);
+    },
+    onAddedBeer(beer) {
+      const response = this.$store.dispatch("addBeer", beer);
+
+      if (!response) {
+        alert("Something went wrong. Try again");
+        return;
+      }
+    },
+    async onSearch() {
+      if (this.searchWord.trim() === "") {
+        return;
+      }
+
+      // const beers = this.$store.dispatch("searchBeer", this.searchWord.trim());
+      const response = await axios
+        .get(`/search/beer?q=${this.searchWord.trim()}`)
+        .then(res => res.data);
+
+      console.log(response);
+
+      if (!response || response.response.beers.items.length === 0) return;
+
+      this.beerSearchResult = response.response.beers.items;
+
+      // this.beers.push(beer);
     },
     onCheckInBeers() {
       if (this.beers.length === 0) {
@@ -96,10 +138,11 @@ export default {
     }
   },
   created() {
-    this.beers = beers;
+    this.beers = this.$store.getters.getBeers;
   },
   components: {
-    BeerCard
+    ChosenBeerCard,
+    SearchBeerCard
   }
 };
 </script>

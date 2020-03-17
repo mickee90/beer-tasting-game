@@ -14,7 +14,9 @@
       </div>
     </div>
     <div class="text-right mx-3">
-      <button class="btn btn-gray" @click.prevent="$emit('delete', beer.id)">Remove</button>
+      <button class="btn btn-gray" @click.prevent="$emit('delete', beer.id)">
+        Remove
+      </button>
     </div>
   </div>
 </template>

@@ -20,29 +20,21 @@ const game_structure = {
   created: null
 };
 
-// const player_structure = {
-//   id: null,
-//   game_id: null,
-//   name: null,
-//   score: null,
-//   created: null
-// };
-
-// const beer_structure = {
-//   id: null,
-//   bid: null,
-//   game_id: null,
-//   game_type_id: null,
-//   beer_number: null,
-//   correct_answer: null,
-//   question: null,
-//   name: null,
-//   type: null,
-//   description: null,
-//   image: null,
-//   brewery: null,
-//   created: null
-// };
+const beer_structure = {
+  id: null,
+  bid: null,
+  game_id: null,
+  game_type_id: null,
+  beer_number: null,
+  correct_answer: null,
+  question: null,
+  name: null,
+  type: null,
+  description: null,
+  image: null,
+  brewery: null,
+  created: null
+};
 
 // const player_answer_structure = {
 //   id: null,
@@ -80,14 +72,14 @@ export default new Vuex.Store({
     removeBeer(state, index) {
       state.beers.splice(index, 1);
     },
-    setUsers(state, payload) {
-      state.users = payload;
+    setPlayers(state, payload) {
+      state.players = payload;
     },
-    addUser(state, payload) {
-      state.users.push(payload);
+    storePlayer(state, payload) {
+      state.players.push(payload);
     },
-    removeUser(state, index) {
-      state.users.splice(index, 1);
+    removePlayer(state, index) {
+      state.players.splice(index, 1);
     }
   },
   actions: {
@@ -166,22 +158,71 @@ export default new Vuex.Store({
     storeBeers({ commit }, payload) {
       commit("setBeers", { ...payload });
     },
-    addBeer({ commit }, payload) {
-      commit("addBeer", { ...payload });
+    addBeer({ commit, getters }, payload) {
+      const beer = { ...beer_structure };
+      console.log(beer, payload);
+
+      beer.bid = payload.beer.bid;
+      beer.name = payload.beer.beer_name;
+      beer.description = payload.beer.beer_description;
+      beer.image = payload.beer.beer_label;
+      beer.type = payload.beer.beer_style;
+      beer.beer_number = getters.getBeers.length + 1;
+      beer.brewery = {
+        brewery_id: payload.brewery.brewery_id,
+        brewery_name: payload.brewery.brewery_name,
+        country_name: payload.brewery.country_name
+      };
+
+      commit("addBeer", { ...beer });
     },
     removeBeer({ commit, getters }, beerId) {
       const index = getters.getBeers.findIndex(beer => beer.id === beerId);
       commit("removeBeer", index);
     },
-    storeUsers({ commit }, payload) {
-      commit("setUsers", { ...payload });
+    storePlayers({ commit }, payload) {
+      commit("setPlayers", { ...payload });
     },
-    addUser({ commit }, payload) {
-      commit("addUser", { ...payload });
+    async storePlayer({ commit, getters }, name) {
+      const game_id = getters.getGame.id;
+
+      const response = await axios
+        .post("https://beer-tasting-game.herokuapp.com/v1/graphql", {
+          query: `
+          mutation storePlayer {
+            insert_players(objects: {name: "${name}", game_id: "${game_id}"}) {
+              returning {
+                id
+                game_id
+                name
+                score
+                created_at
+              }
+            }
+          }`
+        })
+        .then(res => res.data)
+        .catch(err => console.log(err.data));
+
+      console.log(response);
+
+      if (response["errors"] !== undefined) {
+        return false;
+      }
+
+      const player = response.data.insert_players.returning[0];
+
+      console.log(player);
+
+      commit("storePlayer", { ...player });
+
+      return true;
     },
-    removeUser({ commit, getters }, userId) {
-      const index = getters.getUsers.findIndex(user => user.id === userId);
-      commit("removeUser", index);
+    removePlayer({ commit, getters }, playerId) {
+      const index = getters.getPlayers.findIndex(
+        player => player.id === playerId
+      );
+      commit("removePlayer", index);
     }
   },
   getters: {
@@ -191,8 +232,8 @@ export default new Vuex.Store({
     getBeers(state) {
       return state.beers;
     },
-    getUsers(state) {
-      return state.users;
+    getPlayers(state) {
+      return state.players;
     }
   },
   modules: {},
