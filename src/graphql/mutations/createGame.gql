@@ -1,0 +1,16 @@
+mutation createGames($name: String!, $game_master_name: String!) {
+  game: insert_games(
+    objects: { name: $name, game_master_name: $game_master_name }
+  ) {
+    returning {
+      id
+      name
+      game_master_name
+      game_type_id
+      started
+      finished
+      ua
+      created_at
+    }
+  }
+}

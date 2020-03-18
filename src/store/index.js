@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersistance from "vuex-persist";
-import axios from "axios";
+import apolloClient from "../apollo";
 
 const VuexPersist = new VuexPersistance({
   key: "vuex-beer-tasting-game",
@@ -84,74 +84,40 @@ export default new Vuex.Store({
   },
   actions: {
     async createGame({ commit }, payload) {
-      const response = await axios
-        .post("https://beer-tasting-game.herokuapp.com/v1/graphql", {
-          query: `
-            mutation createGames {
-              insert_games(objects: {name: "${payload.name}", game_master_name: "${payload.game_master_name}"}) {
-                returning {
-                  id
-                  name
-                  game_master_name
-                  started
-                  finished
-                  ua
-                  created_at
-                }
-              }
-          }`
-        })
-        .then(res => res.data)
-        .catch(err => console.log(err.data));
+      const response = await apolloClient.mutate({
+        mutation: require("../graphql/mutations/createGame.gql"),
+        variables: {
+          name: payload.name,
+          game_master_name: payload.game_master_name
+        }
+      });
 
-      console.log(response);
-
-      if (response["errors"] !== undefined) {
+      if (!response) {
         return false;
       }
 
-      const game = response.data.insert_games.returning[0];
-
-      console.log(game);
+      const game = response.data.game.returning[0];
 
       commit("setGame", game);
 
       return true;
     },
     async updateGame({ commit, getters }, payload) {
-      const response = await axios
-        .post("https://beer-tasting-game.herokuapp.com/v1/graphql", {
-          query: `
-          mutation updateGame {
-            update_games(where: {id: {_eq: "${
-              getters.getGame.id
-            }"}}, _set: ${JSON.stringify(payload)}}) {
-              returning {
-                id
-                name
-                game_master_name
-                finished
-                started
-                ua
-                created_at
-              }
-            }
-          }`
-        })
-        .then(res => res.data)
-        .catch(err => console.log(err.data));
+      const response = await apolloClient.mutate({
+        mutation: require("../graphql/mutations/updateGame.gql"),
+        variables: {
+          id: getters.getGame.id,
+          set: payload
+        }
+      });
 
-      console.log(response);
-
-      if (response["errors"] !== undefined) {
+      if (!response) {
         return false;
       }
 
-      const game = response.data.insert_games.returning[0];
+      const game = response.data.game.returning[0];
 
-      console.log(game);
-
-      commit("setGame", ...game);
+      commit("setGame", { ...game });
 
       return true;
     },
@@ -186,31 +152,21 @@ export default new Vuex.Store({
     async storePlayer({ commit, getters }, name) {
       const game_id = getters.getGame.id;
 
-      const response = await axios
-        .post("https://beer-tasting-game.herokuapp.com/v1/graphql", {
-          query: `
-          mutation storePlayer {
-            insert_players(objects: {name: "${name}", game_id: "${game_id}"}) {
-              returning {
-                id
-                game_id
-                name
-                score
-                created_at
-              }
-            }
-          }`
-        })
-        .then(res => res.data)
-        .catch(err => console.log(err.data));
+      const response = await apolloClient.mutate({
+        mutation: require("../graphql/mutations/storePlayer.gql"),
+        variables: {
+          name,
+          game_id
+        }
+      });
 
       console.log(response);
 
-      if (response["errors"] !== undefined) {
+      if (!response) {
         return false;
       }
 
-      const player = response.data.insert_players.returning[0];
+      const player = response.data.player.returning[0];
 
       console.log(player);
 

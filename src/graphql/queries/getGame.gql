@@ -1,0 +1,12 @@
+query getGame($id: uuid!) {
+  game: games_by_pk(id: $id) {
+    id
+    name
+    game_master_name
+    game_type_id
+    finished
+    started
+    ua
+    created_at
+  }
+}

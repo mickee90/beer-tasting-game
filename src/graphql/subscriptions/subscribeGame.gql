@@ -1,0 +1,12 @@
+subscription subscribeGame($id: String!) {
+  games(where: {id: {_eq: id}}, limit: 1) {
+    id
+    name
+    game_master_name
+    game_type_id
+    finished
+    started
+    ua
+    created_at
+  }
+}

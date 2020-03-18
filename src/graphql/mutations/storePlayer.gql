@@ -1,0 +1,11 @@
+mutation storePlayer($name: String!, $game_id: uuid!) {
+  player: insert_players(objects: { name: $name, game_id: $game_id }) {
+    returning {
+      id
+      game_id
+      name
+      score
+      created_at
+    }
+  }
+}

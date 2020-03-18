@@ -1,0 +1,14 @@
+mutation updateGame($id: uuid!, $set: games_set_input!) {
+  game: update_games(where: { id: { _eq: $id } }, _set: $set) {
+    returning {
+      id
+      name
+      game_master_name
+      game_type_id
+      finished
+      started
+      ua
+      created_at
+    }
+  }
+}
