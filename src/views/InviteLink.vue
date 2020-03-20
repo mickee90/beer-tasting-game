@@ -1,11 +1,19 @@
 <template>
   <div>
+    <div v-if="fetchGameError">Somethings wrong with this link...</div>
     <div v-if="loading">Loading...</div>
 
     <div v-if="game">
       <h1>Welcome to {{ game.name }}</h1>
 
-      <div class="mb-4" v-if="!game.started">
+      <div v-if="game.started">Sorry but the game has already started...</div>
+      <div v-else-if="alreadyJoined">
+        <div class="mb-5">Your game is already running.</div>
+        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue"
+          >Get back to the game</router-link
+        >
+      </div>
+      <div class="mb-4" v-else>
         <label for="playerName" class="block text-gray-700 font-bold mb-2"
           >Enter your name to join the game</label
         >
@@ -21,9 +29,6 @@
           Join the game
         </button>
       </div>
-      <div v-else>
-        Sorry but the game has already started...
-      </div>
     </div>
   </div>
 </template>
@@ -35,7 +40,9 @@ export default {
       game_id: null,
       game: null,
       playerName: "",
-      loading: false
+      loading: false,
+      fetchGameError: false,
+      alreadyJoined: false
     };
   },
   methods: {
@@ -57,26 +64,39 @@ export default {
   async created() {
     this.loading = true;
 
-    const result = await this.$apollo.query({
-      query: require("../graphql/queries/getGame.gql"),
-      variables: {
-        id: this.$store.getters.getGame.id
-      }
-    });
+    const hash = this.$route.query.hash;
+
+    console.log(hash);
+
+    if (!hash) {
+      this.loading = false;
+      this.fetchGameError = true;
+      return;
+    }
+
+    const game = await this.$apollo
+      .query({
+        query: require("../graphql/queries/getGame.gql"),
+        variables: {
+          id: hash
+        }
+      })
+      .then(res => res.data.game)
+      .catch(err => console.log(err));
 
     this.loading = false;
 
-    if (!result) return;
+    if (!game) {
+      this.fetchGameError = true;
+      return;
+    }
 
-    this.game = result.data;
+    this.game = game;
+    this.$store.commit("setGame", { ...game });
+
+    if (localStorage.getItem("myBeerTastingGameKey") !== null) {
+      this.alreadyJoined = true;
+    }
   }
-  // apollo: {
-  //   game: {
-  //     query: require("../graphql/queries/getGame.gql"),
-  //     variables: {
-  //       id: this.$store.getters.getGame.id
-  //     }
-  //   }
-  // }
 };
 </script>

@@ -84,38 +84,40 @@ export default new Vuex.Store({
   },
   actions: {
     async createGame({ commit }, payload) {
-      const response = await apolloClient.mutate({
-        mutation: require("../graphql/mutations/createGame.gql"),
-        variables: {
-          name: payload.name,
-          game_master_name: payload.game_master_name
-        }
-      });
+      const game = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/createGame.gql"),
+          variables: {
+            name: payload.name,
+            game_master_name: payload.game_master_name
+          }
+        })
+        .then(res => res.data.game.returning[0])
+        .catch(err => console.log(err));
 
-      if (!response) {
+      if (!game) {
         return false;
       }
-
-      const game = response.data.game.returning[0];
 
       commit("setGame", game);
 
       return true;
     },
     async updateGame({ commit, getters }, payload) {
-      const response = await apolloClient.mutate({
-        mutation: require("../graphql/mutations/updateGame.gql"),
-        variables: {
-          id: getters.getGame.id,
-          set: payload
-        }
-      });
+      const game = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/updateGame.gql"),
+          variables: {
+            id: getters.getGame.id,
+            set: payload
+          }
+        })
+        .then(res => res.data.game.returning[0])
+        .catch(err => console.log(err));
 
-      if (!response) {
+      if (!game) {
         return false;
       }
-
-      const game = response.data.game.returning[0];
 
       commit("setGame", { ...game });
 
@@ -152,25 +154,25 @@ export default new Vuex.Store({
     async storePlayer({ commit, getters }, name) {
       const game_id = getters.getGame.id;
 
-      const response = await apolloClient.mutate({
-        mutation: require("../graphql/mutations/storePlayer.gql"),
-        variables: {
-          name,
-          game_id
-        }
-      });
-
-      console.log(response);
-
-      if (!response) {
-        return false;
-      }
-
-      const player = response.data.player.returning[0];
+      const player = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/storePlayer.gql"),
+          variables: {
+            name,
+            game_id
+          }
+        })
+        .then(res => res.data.player.returning[0])
+        .catch(err => console.log(err));
 
       console.log(player);
 
+      if (!player) {
+        return false;
+      }
+
       commit("storePlayer", { ...player });
+      localStorage.setItem("myBeerTastingGameKey", player.id);
 
       return true;
     },

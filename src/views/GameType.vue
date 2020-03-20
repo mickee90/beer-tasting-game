@@ -38,7 +38,7 @@ export default {
     };
   },
   methods: {
-    onChooseGameType() {
+    async onChooseGameType() {
       const game = this.$store.getters.getGame;
 
       console.log(game, this.gameTypeId);
@@ -48,7 +48,7 @@ export default {
         return;
       }
 
-      const response = this.$store.dispatch("updateGame", {
+      const response = await this.$store.dispatch("updateGame", {
         game_type_id: this.gameTypeId
       });
 

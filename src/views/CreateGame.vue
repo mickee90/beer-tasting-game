@@ -56,7 +56,7 @@ export default {
         name: this.name,
         game_master_name: this.game_master_name
       });
-      console.log(response);
+
       if (!response) {
         alert("Something went wrong. Try again");
         return;
