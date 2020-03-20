@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="game">
     <h1>Waiting for the game to start</h1>
     <div class="mb-8 mt-2">
       <div
@@ -26,13 +26,11 @@
     <button v-else class="btn btn-blue" @click="onStartGame">
       Bring out the beer!
     </button>
-    <!-- <router-link :to="{ name: 'GameRunning' }" class="btn btn-blue">Bring out the beer!</router-link> -->
   </div>
 </template>
 
 <script>
 import store from "../store/index";
-import gql from "graphql-tag";
 export default {
   data() {
     return {
@@ -48,60 +46,23 @@ export default {
   mounted() {
     this.game = this.$store.getters.getGame;
   },
-  created() {
-    this.$apollo.queries.tags.subscribeToMore({
-      players: {
-        document: gql`
-          subscription subscribePlayers($game_id: uuid!) {
-            players(where: { game_id: { _eq: $game_id } }) {
-              id
-              name
-              game_id
-              created_at
-              score
-            }
-          }
-        `,
+  apollo: {
+    $subscribe: {
+      gameAndPlayers: {
+        query: require("../graphql/subscriptions/subscribeGameAndPlayers.gql"),
         variables: {
           game_id: store.getters.getGame.id
+        },
+        result(data) {
+          console.log(data);
+          const game = data.data.game;
+
+          this.game = { ...this.game, started: game.started };
+          console.log(this.game);
+          this.players = game.players;
         }
       }
-    });
+    }
   }
-  // apollo: {
-  //   tags: {
-  //     subscribeToMore: {
-  //       players: {
-  //         document: gql`
-  //           subscription subscribePlayers($game_id: uuid!) {
-  //             players(where: { game_id: { _eq: $game_id } }) {
-  //               id
-  //               name
-  //               game_id
-  //               created_at
-  //               score
-  //             }
-  //           }
-  //         `,
-  //         variables: {
-  //           game_id: store.getters.getGame.id
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-  // apollo: {
-  //   $subscribe: {
-  //     players: {
-  //       query: require("../graphql/subscriptions/subscribePlayers.gql"),
-  //       variables: {
-  //         game_id: store.getters.getGame.id
-  //       },
-  //       result(data) {
-  //         this.players = data.data.players;
-  //       }
-  //     }
-  //   }
-  // }
 };
 </script>

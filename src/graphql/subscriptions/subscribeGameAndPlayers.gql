@@ -1,0 +1,19 @@
+subscription getGameAndPlayers($game_id: uuid!) {
+  game: games_by_pk(id: $game_id) {
+    id
+    name
+    game_master_name
+    game_type_id
+    finished
+    started
+    ua
+    created_at
+    players(where: { game_id: { _eq: $game_id } }) {
+      id
+      name
+      game_id
+      created_at
+      score
+    }
+  }
+}
