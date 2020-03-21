@@ -1,0 +1,48 @@
+subscription getGameAndPlayers($game_id: uuid!) {
+  game: games_by_pk(id: $game_id) {
+    id
+    name
+    game_master_name
+    game_type_id
+    finished
+    started
+    ua
+    created_at
+    players {
+      id
+      name
+      game_id
+      created_at
+      score
+    }
+    beers {
+      id
+      bid
+      game_id
+      game_type_id
+      name
+      number
+      type
+      description
+      country
+      brewery
+      image
+      correct_answer
+      question
+      created_at
+    }
+    beer_answers {
+      id
+      question_content
+      game_id
+      beer_id
+    }
+    player_answers {
+      id
+      game_id
+      beer_id
+      answer
+      player_id
+    }
+  }
+}

@@ -4,7 +4,9 @@
     <div class="mb-8">To be continued..</div>
 
     <div>
-      <router-link :to="{ name: 'Scoreboard' }" class="btn btn-blue">Scoreboard</router-link>
+      <router-link :to="{ name: 'Scoreboard' }" class="btn btn-blue"
+        >Scoreboard</router-link
+      >
     </div>
   </div>
 </template>

@@ -1,0 +1,49 @@
+query getEverything($id: uuid!) {
+  game: games_by_pk(id: $id) {
+    id
+    name
+    game_type_id
+    game_master_name
+    finished
+    started
+    ua
+    created_at
+    beers {
+      id
+      name
+      number
+      question
+      type
+      game_type_id
+      game_id
+      description
+      country
+      correct_answer
+      brewery
+      bid
+      image
+      created_at
+    }
+    players {
+      id
+      game_id
+      name
+      score
+      created_at
+    }
+    beer_answers {
+      beer_id
+      game_id
+      id
+      question_content
+    }
+    player_answers {
+      answer
+      beer_id
+      created_at
+      game_id
+      player_id
+      id
+    }
+  }
+}
