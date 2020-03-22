@@ -1,0 +1,5 @@
+mutation deleteBeerAnswers($game_id: uuid!) {
+  beer_answers: delete_beer_answers(where: { game_id: { _eq: $game_id } }) {
+    affected_rows
+  }
+}

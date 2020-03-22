@@ -9,7 +9,7 @@
           <span v-text="title" class="text-xl"></span>
           <button
             class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1"
-            @click.prevent="$emit('removeBeer', beer)"
+            @click.prevent="$emit('delete', beer)"
           >
             Remove
           </button>
@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     title() {
-      return `#${this.beer.beer_number} ${this.beer.name}`;
+      return `#${this.beer.number} ${this.beer.name}`;
     },
     cardHeight() {
       return this.expanded === true ? "h-auto" : "h-40";

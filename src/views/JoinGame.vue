@@ -51,8 +51,9 @@ export default {
       this.$router.push({ name: "GameRunning" });
     }
   },
-  mounted() {
+  created() {
     this.game = this.$store.getters.getGame;
+    console.log(this.game);
   },
   apollo: {
     $subscribe: {

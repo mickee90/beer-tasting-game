@@ -1,0 +1,20 @@
+mutation storeBeers($objects: [beers_insert_input!]!) {
+  beers: insert_beers(objects: $objects) {
+    returning {
+      id
+      bid
+      name
+      number
+      question
+      type
+      image
+      game_type_id
+      game_id
+      description
+      created_at
+      country_name
+      correct_answer
+      brewery_name
+    }
+  }
+}

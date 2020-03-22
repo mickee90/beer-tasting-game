@@ -10,7 +10,7 @@
           type="text"
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center"
           id="beerSearch"
-          placeholder="Type the beer name"
+          placeholder="Type the beer name and press Enter"
           required
           v-model="searchWord"
           @keyup.enter="onSearch"
@@ -70,11 +70,17 @@ export default {
   },
   methods: {
     onDelete(id) {
-      const index = this.beers.findIndex(beer => beer.id === id);
-      this.beers.splice(index, 1);
+      const response = this.$store.dispatch("removeBeer", id);
+      this.beerSearchResult = [];
+
+      if (!response) {
+        alert("Something went wrong. Try again");
+        return;
+      }
     },
     onAddedBeer(beer) {
       const response = this.$store.dispatch("addBeer", beer);
+      this.beerSearchResult = [];
 
       if (!response) {
         alert("Something went wrong. Try again");

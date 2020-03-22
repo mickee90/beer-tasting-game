@@ -14,6 +14,7 @@ subscription getGameAndPlayers($game_id: uuid!) {
       game_id
       created_at
       score
+      finished
     }
   }
 }

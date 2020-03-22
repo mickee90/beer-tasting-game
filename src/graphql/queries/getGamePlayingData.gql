@@ -1,4 +1,4 @@
-query getEverything($id: uuid!) {
+query getGamePlayingData($id: uuid!, $player_id: Int_comparison_exp) {
   game: games_by_pk(id: $id) {
     id
     name
@@ -6,8 +6,6 @@ query getEverything($id: uuid!) {
     game_master_name
     finished
     started
-    ua
-    created_at
     beers {
       id
       name
@@ -17,20 +15,17 @@ query getEverything($id: uuid!) {
       game_type_id
       game_id
       description
-      correct_answer
       brewery_name
       country_name
       bid
       image
-      created_at
     }
-    players {
+    players(where: { id: $player_id }) {
       id
       game_id
       name
-      score
       finished
-      created_at
+      score
     }
     beer_answers {
       beer_id
@@ -41,7 +36,6 @@ query getEverything($id: uuid!) {
     player_answers {
       answer
       beer_id
-      created_at
       game_id
       player_id
       id

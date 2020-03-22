@@ -94,7 +94,11 @@ export default {
     this.game = game;
     this.$store.commit("setGame", { ...game });
 
-    if (localStorage.getItem("myBeerTastingGameKey") !== null) {
+    const currentKey = localStorage.getItem("myBeerTastingGameKey");
+
+    if (currentKey !== null && currentKey !== hash) {
+      localStorage.removeItem("myBeerTastingGameKey");
+    } else if (currentKey !== null) {
       this.alreadyJoined = true;
     }
   }

@@ -9,6 +9,7 @@ import router from "./router";
 import store from "./store";
 
 import VueBarcode from "@chenfengyuan/vue-barcode";
+import VueCarousel from "@chenfengyuan/vue-carousel";
 import Clipboard from "v-clipboard";
 
 // import VueApollo from "vue-apollo";
@@ -43,6 +44,7 @@ import Clipboard from "v-clipboard";
 //   defaultClient: client
 // });
 
+Vue.use(VueCarousel);
 Vue.component(VueBarcode.name, VueBarcode);
 
 Vue.config.productionTip = false;

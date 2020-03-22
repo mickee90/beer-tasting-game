@@ -5,6 +5,7 @@ mutation storePlayer($name: String!, $game_id: uuid!) {
       game_id
       name
       score
+      finished
       created_at
     }
   }

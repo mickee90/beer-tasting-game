@@ -1,0 +1,10 @@
+mutation storeBeerAnswers($objects: [beer_answers_insert_input!]!) {
+  beer_answers: insert_beer_answers(objects: $objects) {
+    returning {
+      beer_id
+      game_id
+      id
+      question_content
+    }
+  }
+}

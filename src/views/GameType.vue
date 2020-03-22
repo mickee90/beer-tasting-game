@@ -2,12 +2,23 @@
   <div>
     <h1>Choose game type</h1>
 
-    <beer-type-card header="Match with description">
+    <beer-type-card
+      header="Match with description"
+      gameTypeId="1"
+      :disabled="true"
+      :selectedGameTypeId="gameTypeId"
+    >
       The players will receive the description of each beer and then try to
       match them while tasting the beers
     </beer-type-card>
 
-    <beer-type-card header="Pick one option">
+    <beer-type-card
+      header="Pick one option"
+      gameTypeId="2"
+      :selectedGameTypeId="gameTypeId"
+      classes="disabled"
+      :disabled="true"
+    >
       The game master enter a question and 2-4 answer alternatives for each
       beer.
       <br />E.g "What type of beer is this?"
@@ -30,6 +41,8 @@
 </template>
 
 <script>
+// @todo Add more game types after first release
+
 import BeerTypeCard from "../components/Layout/BeerTypeCard";
 export default {
   data() {
@@ -40,8 +53,6 @@ export default {
   methods: {
     async onChooseGameType() {
       const game = this.$store.getters.getGame;
-
-      console.log(game, this.gameTypeId);
 
       if (game.id === null || this.gameTypeId === null) {
         alert("Somethings wrong. Please try again");
