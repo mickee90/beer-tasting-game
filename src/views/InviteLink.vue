@@ -9,14 +9,13 @@
       <div v-if="game.started">Sorry but the game has already started...</div>
       <div v-else-if="alreadyJoined">
         <div class="mb-5">Your game is already running.</div>
-        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue"
-          >Get back to the game</router-link
-        >
+        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue">Get back to the game</router-link>
       </div>
       <div class="mb-4" v-else>
-        <label for="playerName" class="block text-gray-700 font-bold mb-2"
-          >Enter your name to join the game</label
-        >
+        <label
+          for="playerName"
+          class="block text-gray-700 font-bold mb-2"
+        >Enter your name to join the game</label>
         <input
           type="text"
           class="shadow appearance-none border rounded mb-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center w-3/4"
@@ -25,9 +24,7 @@
           placeholder="Your name"
           required
         />
-        <button @click.prevent="onJoinGame" class="btn btn-blue mt-4">
-          Join the game
-        </button>
+        <button @click.prevent="onJoinGame" class="btn btn-blue mt-4">Join the game</button>
       </div>
     </div>
   </div>
@@ -96,7 +93,7 @@ export default {
 
     const currentKey = localStorage.getItem("myBeerTastingGameKey");
 
-    if (currentKey !== null && currentKey !== hash) {
+    if (currentKey !== null && currentKey.game_id !== hash) {
       localStorage.removeItem("myBeerTastingGameKey");
     } else if (currentKey !== null) {
       this.alreadyJoined = true;

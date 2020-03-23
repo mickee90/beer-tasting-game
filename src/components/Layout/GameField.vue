@@ -1,5 +1,5 @@
 <template>
-  <div class="game_field">
+  <div class="game_field" v-if="currentBeer === index">
     <h1>Beer #{{ beer.number }}</h1>
     <div>
       <label for="beerSearch">Which beer is it?</label>
@@ -9,12 +9,16 @@
         v-for="beer in beers"
         :key="beer.id"
         :beer="beer"
-        @selectBeer="value => $emit('selectedBeer', value)"
+        @selectBeer="onSelectBeer"
+        :selected="selectedBeer !== null && selectedBeer.id === beer.id"
       />
       <div>
-        <router-link :to="{ name: 'GameRunningTwo' }" class="btn btn-blue"
-          >Next</router-link
-        >
+        <button
+          class="btn btn-blue"
+          :disabled="selectedBeer === null"
+          :class="{'opacity-50 cursor-not-allowed': selectedBeer === null}"
+          @click="goToNext"
+        >{{ lastBeer === true ? 'Submit answers' : 'Next' }}</button>
       </div>
     </div>
   </div>
@@ -23,10 +27,32 @@
 <script>
 import GuessBeerCard from "./GuessBeerCard";
 export default {
-  props: ["beers", "beer"],
+  props: ["beers", "beer", "currentBeer", "index"],
+  data() {
+    return {
+      selectedBeer: null
+    };
+  },
   computed: {
     title() {
       return `#${this.beer.number} ${this.beer.name}`;
+    },
+    lastBeer() {
+      return this.currentBeer === this.beers.length;
+    }
+  },
+  methods: {
+    onSelectBeer(beer) {
+      this.selectedBeer = beer;
+    },
+    goToNext() {
+      if (this.selectedBeer === null) return;
+
+      this.$emit("selectedBeer", this.selectedBeer);
+
+      if (!this.lastBeer) return;
+
+      this.$emit("submitAnswers");
     }
   },
   components: {

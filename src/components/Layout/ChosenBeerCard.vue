@@ -10,9 +10,7 @@
           <button
             class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1"
             @click.prevent="$emit('delete', beer)"
-          >
-            Remove
-          </button>
+          >Remove</button>
         </div>
         <div class="relative" :class="descHeight">
           <strong class="block" v-text="beer.country"></strong>

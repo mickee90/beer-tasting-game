@@ -94,6 +94,9 @@ export default new Vuex.Store({
     setPlayerAnswers(state, payload) {
       state.player_answers = payload;
     },
+    addPlayerAnswers(state, payload) {
+      state.player_answers.push(payload);
+    },
     resetStore(state) {
       Object.assign(state, defaultState());
     }
@@ -318,10 +321,13 @@ export default new Vuex.Store({
       commit("setPlayer", { ...player });
 
       const currentKey = localStorage.getItem("myBeerTastingGameKey");
-      if (currentKey !== null && currentKey !== game_id) {
+      if (currentKey !== null && currentKey.game_id !== game_id) {
         localStorage.removeItem("myBeerTastingGameKey");
       }
-      localStorage.setItem("myBeerTastingGameKey", game_id);
+      localStorage.setItem("myBeerTastingGameKey", {
+        game_id,
+        player_id: player.id
+      });
 
       return true;
     },
@@ -330,6 +336,91 @@ export default new Vuex.Store({
         player => player.id === playerId
       );
       commit("removePlayer", index);
+    },
+    async storePlayerAnswers({ commit, getters }, payload) {
+      const game = getters.getGame;
+      let player = getters.getPlayer;
+      console.log("player", player);
+
+      if (player === undefined) {
+        let currentKey = localStorage.getItem("myBeerTastingGameKey");
+        console.log("currentKey", currentKey);
+
+        if (currentKey === null || currentKey === undefined) return false;
+        currentKey = JSON.parse(currentKey);
+        console.log("currentKey 2", currentKey);
+
+        const player_response = await apolloClient
+          .query({
+            query: require("../graphql/queries/getPlayer.gql"),
+            variables: {
+              id: currentKey.player_id
+            }
+          })
+          .then(res => res.data.player)
+          .catch(err => console.log(err));
+
+        console.log("currentKey 3", player_response);
+        if (!player_response) {
+          return false;
+        }
+        player = player_response;
+      }
+
+      console.log("wut", player);
+
+      const answers = [];
+      payload.forEach(answer => {
+        for (let i = 0; i < payload.length; i++) {
+          answers.push({
+            game_id: game.id,
+            beer_id: answer.current_beer_id,
+            player_id: player.id,
+            answer: answer.answer
+          });
+        }
+      });
+
+      console.log(payload, answers);
+
+      const answer_response = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/storePlayerAnswers.gql"),
+          variables: {
+            objects: answers
+          }
+        })
+        .then(res => res.data.player_answers)
+        .catch(err => console.log(err));
+
+      if (!answer_response || answer_response.returning.length === 0) {
+        return false;
+      }
+
+      commit("addPlayerAnswers", answer_response.returning);
+
+      const player_response = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/updatePlayer.gql"),
+          variables: {
+            id: player.id,
+            set: { finished: true }
+          }
+        })
+        .then(res => res.data.player)
+        .catch(err => console.log(err));
+
+      if (!player_response) return;
+
+      commit("setPlayer", { ...player, ...player_response });
+
+      const players = getters.getPlayers.map(player => {
+        if (player.id !== player_response.id) return player;
+
+        return { ...player, ...player_response };
+      });
+
+      commit("setPlayers", players);
     }
   },
   getters: {

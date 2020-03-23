@@ -3,11 +3,14 @@
     <!-- <carousel :data="[<game-field v-for="beer in beers" :key="beer.id" :beer="beer" />]"></carousel> -->
     <game-field
       class="game_field"
-      v-for="beer in beers"
+      v-for="(beer, index) in beers"
       :key="beer.id"
       :beer="beer"
       :beers="beers"
-      @selectBeer="selectedBeer"
+      :index="index+1"
+      :currentBeer="currentBeer"
+      @selectedBeer="selectedBeer"
+      @submitAnswers="onSubmittedAnswers"
     />
   </div>
 </template>
@@ -27,15 +30,34 @@ export default {
   },
   methods: {
     selectedBeer(beer) {
-      this.playerAnswers[this.currentBeer] = beer.number;
+      const currentBeerId = this.beers[this.currentBeer - 1].id;
+      this.playerAnswers.push({
+        current_beer_id: currentBeerId,
+        answer: beer.number,
+        beer_id: beer.id
+      });
 
       if (this.currentBeer === this.beers.length) {
         this.done = true;
-        alert("done!");
         return;
       }
 
       this.currentBeer++;
+    },
+    async onSubmittedAnswers() {
+      if (!this.done) return;
+
+      const result = await this.$store.dispatch(
+        "storePlayerAnswers",
+        this.playerAnswers
+      );
+
+      if (!result) {
+        alert("Something went wrong. Reload and try again");
+        return;
+      }
+
+      this.$router.push({ name: "AwaitResults" });
     }
   },
   async created() {
@@ -53,10 +75,7 @@ export default {
       .then(res => res.data.game)
       .catch(err => console.log(err));
 
-    console.log(response);
     if (!response) return;
-
-    console.log(response);
 
     this.game = {
       ...game,

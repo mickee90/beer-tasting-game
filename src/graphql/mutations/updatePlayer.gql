@@ -1,0 +1,12 @@
+mutation updatePlayer($id: Int!, $set: player_set_input!) {
+  player: update_players(where: { id: { _eq: $id } }, _set: $set) {
+    returning {
+      id
+      name
+      score
+      game_id
+      finished
+      created_at
+    }
+  }
+}

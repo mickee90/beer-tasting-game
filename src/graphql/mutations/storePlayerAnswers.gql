@@ -1,0 +1,11 @@
+mutation storePlayerAnswers($objects: [player_answers_insert_input!]!) {
+  player_answers: insert_player_answers(objects: $objects) {
+    returning {
+      id
+      player_id
+      game_id
+      beer_id
+      answer
+    }
+  }
+}

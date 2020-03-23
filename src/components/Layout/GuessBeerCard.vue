@@ -1,23 +1,19 @@
 <template>
-  <div
-    class="border-b border-gray-300 bg-white mb-10 pb-10"
-    :class="cardHeight"
-  >
+  <div class="border-b border-gray-300 bg-white mb-10" :class="cardHeight">
     <div class="flex mb-5">
       <div class="w-1/3 flex">
         <img :src="`${beer.image}`" :alt="beer.name" class="thumbnail" />
       </div>
       <div class="w-2/3 text-left">
         <div class="flex">
-          <span v-text="title" class="text-xl"></span>
+          <span v-text="title" class="text-xl" :class="{'font-bold': selected }"></span>
           <button
             class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1"
             @click.prevent="$emit('selectBeer', beer)"
-          >
-            This one!
-          </button>
+            :class="{'opacity-50 cursor-not-allowed': selected}"
+          >{{ selected ? 'This one!' : 'Choose' }}</button>
         </div>
-        <div class="relative" :class="descHeight">
+        <div class="relative pb-10" :class="descHeight">
           <strong class="block" v-text="beer.country"></strong>
           <slot>{{ beer.description }}</slot>
           <div class="expand-btn" @click="onExpand" v-text="expandText"></div>
@@ -29,7 +25,7 @@
 
 <script>
 export default {
-  props: ["beer"],
+  props: ["beer", "selected"],
   data() {
     return {
       expanded: false

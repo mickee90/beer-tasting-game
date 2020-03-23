@@ -3,9 +3,10 @@
     <h1>Time to find some beers</h1>
     <div>
       <div class="mb-4">
-        <label for="beerSearch" class="block text-gray-700 font-bold mb-2"
-          >Search or scan for the beer</label
-        >
+        <label
+          for="beerSearch"
+          class="block text-gray-700 font-bold mb-2"
+        >Search or scan for the beer</label>
         <input
           type="text"
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center"
@@ -28,29 +29,18 @@
         </div>
       </div>
 
-      <div
-        class="w-1/2 text-center border-b border-gray-400 mx-auto mb-5 text-lg"
-      >
-        Or
-      </div>
+      <div class="w-1/2 text-center border-b border-gray-400 mx-auto mb-5 text-lg">Or</div>
 
       <button class="btn btn-gray">Scan barcode</button>
 
       <div class="py-16">
-        <chosen-beer-card
-          v-for="beer in beers"
-          :key="beer.id"
-          :beer="beer"
-          @delete="onDelete"
-        ></chosen-beer-card>
+        <chosen-beer-card v-for="beer in beers" :key="beer.id" :beer="beer" @delete="onDelete"></chosen-beer-card>
       </div>
       <button
         class="btn btn-blue btn:disabled"
         :disabled="disabled"
         @click.prevent="onCheckInBeers"
-      >
-        Next
-      </button>
+      >Next</button>
     </div>
   </div>
 </template>

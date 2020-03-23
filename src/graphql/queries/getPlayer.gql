@@ -1,0 +1,10 @@
+query getPlayer($id: Int!) {
+  player: players_by_pk(id: $id) {
+    id
+    name
+    score
+    game_id
+    finished
+    created_at
+  }
+}
