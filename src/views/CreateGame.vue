@@ -2,9 +2,7 @@
   <div>
     <h1>Create a new game</h1>
     <div class="mb-6">
-      <label for="gameName" class="block text-gray-700 font-bold mb-2"
-        >Enter the name of the game</label
-      >
+      <label for="gameName" class="block text-gray-700 font-bold mb-2">Enter the name of the game</label>
       <input
         type="text"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -15,9 +13,7 @@
       />
     </div>
     <div class="mb-6">
-      <label for="gameMasterName" class="block text-gray-700 font-bold mb-2"
-        >Enter your name</label
-      >
+      <label for="gameMasterName" class="block text-gray-700 font-bold mb-2">Enter your name</label>
       <input
         type="text"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -27,13 +23,7 @@
         required
       />
     </div>
-    <button
-      class="btn btn-blue btn:disabled"
-      :disabled="disabled"
-      @click.prevent="onStoreGame"
-    >
-      Next
-    </button>
+    <button class="btn btn-blue btn:disabled" :disabled="disabled" @click.prevent="onStoreGame">Next</button>
   </div>
 </template>
 
@@ -66,8 +56,8 @@ export default {
     }
   },
   created() {
-    this.name = this.$store.getters.getGame.name ?? "";
-    this.game_master_name = this.$store.getters.getGame.game_master_name ?? "";
+    // this.name = this.$store.getters.getGame.name ?? "";
+    // this.game_master_name = this.$store.getters.getGame.game_master_name ?? "";
   }
 };
 </script>

@@ -1,0 +1,10 @@
+query getPlayers($game_id: uuid!) {
+  players(where: { game_id: { _eq: $game_id } }) {
+    id
+    name
+    score
+    game_id
+    finished
+    created_at
+  }
+}

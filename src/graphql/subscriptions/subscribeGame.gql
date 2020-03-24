@@ -1,9 +1,9 @@
-subscription subscribeGame($id: String!) {
-  games(where: {id: {_eq: id}}, limit: 1) {
+subscription subscribeGame($id: uuid!) {
+  game: games_by_pk(id: $id) {
     id
     name
-    game_master_name
     game_type_id
+    game_master_name
     finished
     started
     ua

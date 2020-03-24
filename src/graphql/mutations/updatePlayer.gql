@@ -1,4 +1,4 @@
-mutation updatePlayer($id: Int!, $set: player_set_input!) {
+mutation updatePlayer($id: Int!, $set: players_set_input!) {
   player: update_players(where: { id: { _eq: $id } }, _set: $set) {
     returning {
       id

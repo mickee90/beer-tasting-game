@@ -344,11 +344,9 @@ export default new Vuex.Store({
 
       if (player === undefined) {
         let currentKey = localStorage.getItem("myBeerTastingGameKey");
-        console.log("currentKey", currentKey);
 
         if (currentKey === null || currentKey === undefined) return false;
         currentKey = JSON.parse(currentKey);
-        console.log("currentKey 2", currentKey);
 
         const player_response = await apolloClient
           .query({
@@ -367,21 +365,15 @@ export default new Vuex.Store({
         player = player_response;
       }
 
-      console.log("wut", player);
-
       const answers = [];
       payload.forEach(answer => {
-        for (let i = 0; i < payload.length; i++) {
-          answers.push({
-            game_id: game.id,
-            beer_id: answer.current_beer_id,
-            player_id: player.id,
-            answer: answer.answer
-          });
-        }
+        answers.push({
+          game_id: game.id,
+          beer_id: answer.current_beer_id,
+          player_id: player.id,
+          answer: answer.answer
+        });
       });
-
-      console.log(payload, answers);
 
       const answer_response = await apolloClient
         .mutate({
@@ -412,15 +404,33 @@ export default new Vuex.Store({
 
       if (!player_response) return;
 
-      commit("setPlayer", { ...player, ...player_response });
+      commit("setPlayer", { ...player, ...player_response.returning[0] });
 
-      const players = getters.getPlayers.map(player => {
+      let players = getters.getPlayers;
+
+      if (players.length === 0) {
+        players = await apolloClient
+          .query({
+            query: require("../graphql/queries/getPlayers.gql"),
+            variables: {
+              game_id: game.id
+            }
+          })
+          .then(res => res.data.players)
+          .catch(err => console.log(err));
+
+        if (!players) return;
+      }
+
+      players = players.map(player => {
         if (player.id !== player_response.id) return player;
 
         return { ...player, ...player_response };
       });
 
       commit("setPlayers", players);
+
+      return true;
     }
   },
   getters: {
