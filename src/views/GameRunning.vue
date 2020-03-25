@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="player">
     <!-- <carousel :data="[<game-field v-for="beer in beers" :key="beer.id" :beer="beer" />]"></carousel> -->
-    <div v-if="player.finished">
+    <div v-if="player.finished === true">
       <div class="mb-5">You have already submitted your answers.</div>
       <router-link :to="{name: 'AwaitResults'}" class="btn btn-blue">Go to scoreboard</router-link>
     </div>
@@ -60,6 +60,7 @@ export default {
         return;
       }
 
+      scrollTo(0, 0);
       this.currentBeer++;
     },
     async onSubmittedAnswers() {
@@ -82,14 +83,14 @@ export default {
   },
   async created() {
     const game = this.$store.getters.getGame;
-    // const playerId = this.$store.getters.getPlayer.id;
+    const playerId = this.$store.getters.getPlayer.id;
 
     const response = await this.$apollo
       .query({
         query: require("../graphql/queries/getGamePlayingData.gql"),
         variables: {
           id: game.id,
-          player_id: { _eq: 11 }
+          player_id: { _eq: playerId }
         }
       })
       .then(res => res.data.game)

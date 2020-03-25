@@ -320,14 +320,19 @@ export default new Vuex.Store({
       commit("addPlayer", { ...player });
       commit("setPlayer", { ...player });
 
-      const currentKey = localStorage.getItem("myBeerTastingGameKey");
+      const currentKey = JSON.parse(
+        localStorage.getItem("myBeerTastingGameKey")
+      );
       if (currentKey !== null && currentKey.game_id !== game_id) {
         localStorage.removeItem("myBeerTastingGameKey");
       }
-      localStorage.setItem("myBeerTastingGameKey", {
-        game_id,
-        player_id: player.id
-      });
+      localStorage.setItem(
+        "myBeerTastingGameKey",
+        JSON.stringify({
+          game_id,
+          player_id: player.id
+        })
+      );
 
       return true;
     },

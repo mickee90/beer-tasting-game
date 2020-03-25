@@ -6,8 +6,8 @@
     <div v-if="game">
       <h1>Welcome to {{ game.name }}</h1>
 
-      <div v-if="game.started">Sorry but the game has already started...</div>
-      <div v-else-if="alreadyJoined">
+      <div v-if="game.started === true">Sorry but the game has already started...</div>
+      <div v-else-if="alreadyJoined === true">
         <div class="mb-5">Your game is already running.</div>
         <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue">Get back to the game</router-link>
       </div>
@@ -63,8 +63,6 @@ export default {
 
     const hash = this.$route.query.hash;
 
-    console.log(hash);
-
     if (!hash) {
       this.loading = false;
       this.fetchGameError = true;
@@ -91,7 +89,7 @@ export default {
     this.game = game;
     this.$store.commit("setGame", { ...game });
 
-    const currentKey = localStorage.getItem("myBeerTastingGameKey");
+    const currentKey = JSON.parse(localStorage.getItem("myBeerTastingGameKey"));
 
     if (currentKey !== null && currentKey.game_id !== hash) {
       localStorage.removeItem("myBeerTastingGameKey");

@@ -71,6 +71,7 @@ export default {
     onAddedBeer(beer) {
       const response = this.$store.dispatch("addBeer", beer);
       this.beerSearchResult = [];
+      this.searchWord = "";
 
       if (!response) {
         alert("Something went wrong. Try again");

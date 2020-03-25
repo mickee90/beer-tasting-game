@@ -1,5 +1,5 @@
 <template>
-  <div v-if="game">
+  <div v-if="game !== null">
     <h1>Start the game</h1>
     <div class="mb-8">
       <div
@@ -16,7 +16,18 @@
     </div>
 
     <div>
-      <button v-if="!game.started" class="btn btn-blue" @click="onStartGame">
+      <button
+        v-if="!game.started && players.length === 0"
+        class="btn btn-blue opacity-50 cursor-not-allowed"
+        disabled
+      >
+        Wait for players
+      </button>
+      <button
+        v-else-if="!game.started"
+        class="btn btn-blue"
+        @click="onStartGame"
+      >
         Start the game!
       </button>
       <button v-else class="btn btn-blue" @click="onGoToGame">

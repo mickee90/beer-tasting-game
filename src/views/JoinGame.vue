@@ -1,6 +1,6 @@
 <template>
-  <div v-if="game">
-    <div v-if="game.finished">
+  <div v-if="game !== null">
+    <div v-if="game.finished === true">
       <h1>The game has ended</h1>
       <router-link :to="{ name: 'Scoreboard' }" class="btn btn-blue"
         >Go to scoreboard</router-link
@@ -52,8 +52,7 @@ export default {
     }
   },
   created() {
-    this.game = this.$store.getters.getGame;
-    console.log(this.game);
+    // this.game = this.$store.getters.getGame;
   },
   apollo: {
     $subscribe: {
@@ -64,9 +63,12 @@ export default {
         },
         result(data) {
           const game = data.data.game;
+          console.log("subscribeGameAndPlayers", game);
 
-          this.game = { ...this.game, ...game };
+          this.game = { ...game };
+          // this.game = { ...this.game, ...game };
           this.players = game.players;
+          console.log(this.game);
         }
       }
     }

@@ -2,11 +2,7 @@
   <div v-if="game">
     <h1>Game progress</h1>
     <div class="mb-8">
-      <div
-        class="border-b border-gray-300 mb-4 pb-4"
-        v-for="(beer, index) in beers"
-        :key="beer.id"
-      >
+      <div class="border-b border-gray-300 mb-4 pb-4" v-for="(beer, index) in beers" :key="beer.id">
         <div class="text-xl">
           <div class="card-header">
             Beer #{{ index + 1 }} -
@@ -17,12 +13,8 @@
       </div>
     </div>
 
-    <button v-if="gameDone" class="btn btn-blue" @click="goToNext">
-      {{ goToNextTitle }}
-    </button>
-    <button v-else class="btn btn-blue disabled" disabled>
-      Waiting for the players to drink up...
-    </button>
+    <button v-if="gameDone" class="btn btn-blue" @click="goToNext">{{ goToNextTitle }}</button>
+    <button v-else class="btn btn-blue disabled" disabled>Waiting for the players to drink up...</button>
   </div>
 </template>
 
@@ -47,6 +39,7 @@ export default {
       }
 
       if (
+        index > 1 &&
         this.beers[index - 2].finished &&
         !this.beers[index - 1].finished &&
         !beer.finished

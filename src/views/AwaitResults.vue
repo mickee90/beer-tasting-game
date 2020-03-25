@@ -30,7 +30,7 @@ export default {
         result(data) {
           const game = data.data.game;
           this.game = { ...this.game, ...game };
-          if (this.game.finished) {
+          if (this.game.finished === true) {
             this.$router.push({ name: "Scoreboard" });
           }
         }
