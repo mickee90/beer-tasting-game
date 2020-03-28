@@ -28,8 +28,7 @@ export default {
           id: store.getters.getGame.id
         },
         result(data) {
-          const game = data.data.game;
-          this.game = { ...this.game, ...game };
+          this.game = { ...this.game, ...data.data.game };
           if (this.game.finished === true) {
             this.$router.push({ name: "Scoreboard" });
           }

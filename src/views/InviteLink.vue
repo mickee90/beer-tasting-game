@@ -6,25 +6,30 @@
     <div v-if="game">
       <h1>Welcome to {{ game.name }}</h1>
 
-      <div v-if="game.started === true">Sorry but the game has already started...</div>
+      <div v-if="game.started === true">
+        Sorry but the game has already started...
+      </div>
       <div v-else-if="alreadyJoined === true">
         <div class="mb-5">Your game is already running.</div>
-        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue">Get back to the game</router-link>
+        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue"
+          >Get back to the game</router-link
+        >
       </div>
       <div class="mb-4" v-else>
-        <label
-          for="playerName"
-          class="block text-gray-700 font-bold mb-2"
-        >Enter your name to join the game</label>
-        <input
+        <label for="playerName" class="block text-gray-700 font-bold mb-2"
+          >Enter your name to join the game</label
+        >
+        <BaseInputText
           type="text"
-          class="shadow appearance-none border rounded mb-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center w-3/4"
+          classes="text-center w-3/4"
           id="playerName"
           v-model="playerName"
           placeholder="Your name"
           required
         />
-        <button @click.prevent="onJoinGame" class="btn btn-blue mt-4">Join the game</button>
+        <BaseButton @click="onJoinGame" :disabled="disabled" classes="mt-4"
+          >Join the game</BaseButton
+        >
       </div>
     </div>
   </div>
@@ -56,6 +61,11 @@ export default {
       if (!response) return;
 
       this.$router.push({ name: "JoinGame" });
+    }
+  },
+  computed: {
+    disabled() {
+      return this.playerName.trim() === "";
     }
   },
   async created() {

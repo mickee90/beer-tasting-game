@@ -3,9 +3,7 @@
     <h1>Invite your friends</h1>
     <div>
       <div class="my-5">
-        <button class="btn btn-blue" v-clipboard="() => gameUrl">
-          Click to copy link
-        </button>
+        <BaseButton v-clipboard="() => gameUrl">Click to copy link</BaseButton>
       </div>
     </div>
     <div>

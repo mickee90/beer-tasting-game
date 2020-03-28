@@ -2,10 +2,11 @@
   <div>
     <h1>Create a new game</h1>
     <div class="mb-6">
-      <label for="gameName" class="block text-gray-700 font-bold mb-2">Enter the name of the game</label>
-      <input
+      <label for="gameName" class="block text-gray-700 font-bold mb-2"
+        >Enter the name of the game</label
+      >
+      <BaseInputText
         type="text"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         id="gameName"
         v-model="name"
         placeholder="Name the game"
@@ -13,17 +14,18 @@
       />
     </div>
     <div class="mb-6">
-      <label for="gameMasterName" class="block text-gray-700 font-bold mb-2">Enter your name</label>
-      <input
+      <label for="gameMasterName" class="block text-gray-700 font-bold mb-2"
+        >Enter your name</label
+      >
+      <BaseInputText
         type="text"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         id="gameMasterName"
         v-model="game_master_name"
         placeholder="Your name"
         required
       />
     </div>
-    <button class="btn btn-blue btn:disabled" :disabled="disabled" @click.prevent="onStoreGame">Next</button>
+    <BaseButton @click="onStoreGame" :disabled="disabled">Next</BaseButton>
   </div>
 </template>
 

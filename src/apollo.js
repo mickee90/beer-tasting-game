@@ -9,5 +9,8 @@ export default new ApolloClient({
   }),
   // Using a cache for blazingly
   // fast subsequent queries.
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  defaultOptions: {
+    fetchPolicy: "no-cache"
+  }
 });

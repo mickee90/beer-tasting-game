@@ -38,7 +38,10 @@ const client = new ApolloClient({
   link: link,
   cache: new InMemoryCache({
     addTypename: true
-  })
+  }),
+  defaultOptions: {
+    fetchPolicy: "no-cache"
+  }
 });
 
 Vue.use(VueApollo);

@@ -30,13 +30,7 @@
       </ul>
     </beer-type-card>
 
-    <button
-      class="btn btn-blue btn:disabled"
-      :disabled="disabled"
-      @click.prevent="onChooseGameType"
-    >
-      Next
-    </button>
+    <BaseButton @click="onChooseGameType" :disabled="disabled">Next</BaseButton>
   </div>
 </template>
 

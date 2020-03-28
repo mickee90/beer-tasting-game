@@ -16,23 +16,19 @@
     </div>
 
     <div>
-      <button
+      <BaseButton
         v-if="!game.started && players.length === 0"
-        class="btn btn-blue opacity-50 cursor-not-allowed"
-        disabled
+        :disabled="disabled"
+        >Wait for players</BaseButton
       >
-        Wait for players
-      </button>
-      <button
-        v-else-if="!game.started"
-        class="btn btn-blue"
-        @click="onStartGame"
+
+      <BaseButton v-else-if="!game.started" @click="onStartGame"
+        >Start the game!</BaseButton
       >
-        Start the game!
-      </button>
-      <button v-else class="btn btn-blue" @click="onGoToGame">
-        The game is running. Check the status.
-      </button>
+
+      <BaseButton v-else @click="onGoToGame">
+        The game is running. Check the status.</BaseButton
+      >
     </div>
   </div>
 </template>
@@ -66,6 +62,9 @@ export default {
   mounted() {
     this.game = this.$store.getters.getGame;
   },
+  created() {
+    this.$apollo.subscriptions.gameAndPlayers.refresh();
+  },
   apollo: {
     $subscribe: {
       gameAndPlayers: {
@@ -74,11 +73,10 @@ export default {
           game_id: store.getters.getGame.id
         },
         result(data) {
-          console.log(data);
+          console.log("subscribeGameAndPlayers", data);
           const game = data.data.game;
 
           this.game = { ...this.game, started: game.started };
-          console.log(this.game);
           this.players = game.players;
         }
       }

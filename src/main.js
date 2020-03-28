@@ -5,6 +5,9 @@ import apolloProvider from "./apolloProvider";
 
 import "./assets/styles/index.css";
 
+// Globally register all `_base`-prefixed components
+import "./components/_globals";
+
 import router from "./router";
 import store from "./store";
 

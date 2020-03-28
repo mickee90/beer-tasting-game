@@ -27,12 +27,9 @@
         started the game
       </div>
 
-      <button v-if="!game.started" class="btn btn-blue" disabled>
-        Waiting...
-      </button>
-      <button v-else class="btn btn-blue" @click="onStartGame">
-        Bring out the beer!
-      </button>
+      <BaseButton @click="onStartGame" :disabled="!game.started">
+        {{ !game.started ? "Waiting..." : "Bring out the beer!" }}
+      </BaseButton>
     </div>
   </div>
 </template>
@@ -52,7 +49,7 @@ export default {
     }
   },
   created() {
-    // this.game = this.$store.getters.getGame;
+    this.$apollo.subscriptions.gameAndPlayers.refresh();
   },
   apollo: {
     $subscribe: {
@@ -63,12 +60,9 @@ export default {
         },
         result(data) {
           const game = data.data.game;
-          console.log("subscribeGameAndPlayers", game);
 
           this.game = { ...game };
-          // this.game = { ...this.game, ...game };
           this.players = game.players;
-          console.log(this.game);
         }
       }
     }
