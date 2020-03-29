@@ -47,5 +47,8 @@ const client = new ApolloClient({
 Vue.use(VueApollo);
 
 export default new VueApollo({
-  defaultClient: client
+  defaultClient: client,
+  defaultOptions: {
+    $loadingKey: "loading"
+  }
 });

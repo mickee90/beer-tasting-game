@@ -10,6 +10,7 @@
 
 <script>
 import store from "../store/index";
+import router from "../router/index";
 
 export default {
   data() {
@@ -17,23 +18,34 @@ export default {
       game: null
     };
   },
-  created() {
-    this.game = this.$store.getters.getGame;
-  },
   apollo: {
-    $subscribe: {
-      game: {
-        query: require("../graphql/subscriptions/subscribeGame.gql"),
-        variables: {
+    game: {
+      query: require("../graphql/queries/getGame.gql"),
+      variables() {
+        return {
           id: store.getters.getGame.id
-        },
-        result(data) {
-          this.game = { ...this.game, ...data.data.game };
-          if (this.game.finished === true) {
-            this.$router.push({ name: "Scoreboard" });
+        };
+      },
+      update(data) {
+        return { ...data };
+      },
+      subscribeToMore: [
+        {
+          document: require("../graphql/subscriptions/subscribeGame.gql"),
+          variables() {
+            return {
+              id: store.getters.getGame.id
+            };
+          },
+          updateQuery: (previous, { subscriptionData }) => {
+            if (subscriptionData.data.game.finished === true) {
+              router.push({ name: "Scoreboard" });
+            }
+
+            return { ...subscriptionData.data };
           }
         }
-      }
+      ]
     }
   }
 };

@@ -7,7 +7,6 @@ query getEverything($id: uuid!) {
     finished
     started
     ua
-    created_at
     beers {
       id
       name
@@ -22,7 +21,6 @@ query getEverything($id: uuid!) {
       country_name
       bid
       image
-      created_at
     }
     players {
       id
@@ -30,7 +28,6 @@ query getEverything($id: uuid!) {
       name
       score
       finished
-      created_at
     }
     beer_answers {
       beer_id
@@ -41,7 +38,6 @@ query getEverything($id: uuid!) {
     player_answers {
       answer
       beer_id
-      created_at
       game_id
       player_id
       id

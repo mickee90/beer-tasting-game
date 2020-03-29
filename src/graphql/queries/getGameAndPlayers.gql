@@ -1,0 +1,17 @@
+query($id: uuid!, $player_id: Int_comparison_exp) {
+  game: games_by_pk(id: $id) {
+    id
+    name
+    game_type_id
+    game_master_name
+    finished
+    started
+    players(where: { id: $player_id }) {
+      id
+      game_id
+      name
+      finished
+      score
+    }
+  }
+}

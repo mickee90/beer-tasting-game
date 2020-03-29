@@ -1,10 +1,10 @@
 <template>
-  <div v-if="game">
+  <div v-if="!loading">
     <h1>Game progress</h1>
     <div class="mb-8">
       <div
         class="border-b border-gray-300 mb-4 pb-4"
-        v-for="(beer, index) in beers"
+        v-for="(beer, index) in game.beers"
         :key="beer.id"
       >
         <div class="text-xl">
@@ -34,7 +34,8 @@ export default {
     return {
       beers: [],
       player_answers: [],
-      game: null
+      game: null,
+      loading: 0
     };
   },
   methods: {
@@ -43,14 +44,17 @@ export default {
         return "Done!";
       }
 
-      if ((index === 0 || this.beers[index - 1].finished) && !beer.finished) {
+      if (
+        (index === 0 || this.game.beers[index - 1].finished) &&
+        !beer.finished
+      ) {
         return "In progress...";
       }
 
       if (
         index > 1 &&
-        this.beers[index - 2].finished &&
-        !this.beers[index - 1].finished &&
+        this.game.beers[index - 2].finished &&
+        !this.game.beers[index - 1].finished &&
         !beer.finished
       ) {
         return "Next up. Prepare the beer!";
@@ -84,11 +88,12 @@ export default {
   },
   computed: {
     gameDone() {
-      if (this.beers.length === 0) return;
+      if (this.game.beers.length === 0) return;
 
+      console.log(this.game.beers);
       return (
-        this.beers.filter(beer => beer.finished === true).length ===
-        this.beers.length
+        this.game.beers.filter(beer => beer.finished === true).length ===
+        this.game.beers.length
       );
     },
     goToNextTitle() {
@@ -100,37 +105,61 @@ export default {
       }
     }
   },
-  mounted() {
-    this.game = this.$store.getters.getGame;
-  },
   apollo: {
-    $subscribe: {
-      gameAndPlayers: {
-        query: require("../graphql/subscriptions/subscribeEverything.gql"),
-        variables: {
-          game_id: store.getters.getGame.id
-        },
-        result(data) {
-          console.log(data);
-          const game = data.data.game;
+    game: {
+      query: require("../graphql/queries/getEverything.gql"),
+      variables() {
+        return {
+          id: store.getters.getGame.id
+        };
+      },
+      update(data) {
+        const game = data.game;
+        const beers = game.beers.map(beer => {
+          const answers = game.player_answers.filter(
+            answer => answer.beer_id === beer.id
+          );
 
-          // this.game = { ...this.game, started: game.started };
-          console.log(this.game);
-          this.player_answers = game.player_answers;
-          this.beers = game.beers.map(beer => {
-            const answers = game.player_answers.filter(
-              answer => answer.beer_id === beer.id
-            );
+          // @todo should not be possible with more answers than number of players
+          // Make sure we can change this to === later
+          return {
+            ...beer,
+            finished: answers.length >= game.players.length
+          };
+        });
 
-            // @todo should not be possible with more answers than number of players
-            // Make sure we can change this to === later
+        console.log("beers", beers);
+
+        return { ...data.game, beers: beers };
+      },
+      subscribeToMore: [
+        {
+          document: require("../graphql/subscriptions/subscribeEverything.gql"),
+          variables() {
             return {
-              ...beer,
-              finished: answers.length >= game.players.length
+              game_id: store.getters.getGame.id
             };
-          });
+          },
+          updateQuery: (previous, { subscriptionData }) => {
+            const game = subscriptionData.data.game;
+
+            const beers = game.beers.map(beer => {
+              const answers = game.player_answers.filter(
+                answer => answer.beer_id === beer.id
+              );
+
+              // @todo should not be possible with more answers than number of players
+              // Make sure we can change this to === later
+              return {
+                ...beer,
+                finished: answers.length >= game.players.length
+              };
+            });
+
+            return { ...subscriptionData.data, ...beers };
+          }
         }
-      }
+      ]
     }
   }
 };

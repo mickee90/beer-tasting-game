@@ -1,4 +1,4 @@
-subscription getGameAndPlayers($game_id: uuid!) {
+subscription($game_id: uuid!) {
   game: games_by_pk(id: $game_id) {
     id
     name
