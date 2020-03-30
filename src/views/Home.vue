@@ -2,7 +2,15 @@
   <div>
     <h1>The beer tasting game!</h1>
     <div v-if="backdoor" class="mb-4">
-      <router-link :to="{ name: 'create' }" class="btn btn-blue">Start a new game!</router-link>
+      <router-link :to="{ name: 'Create' }" class="btn btn-blue"
+        >Start a new game!</router-link
+      >
+      <router-link
+        :to="{ name: 'FindGame' }"
+        class="btn btn-blue"
+        v-if="true === false"
+        >Find game</router-link
+      >
     </div>
     <div v-else>
       <h3>This site will hopefully be ready soon...</h3>
@@ -13,9 +21,9 @@
       <br />
       <br />
       <i>
-        The Beer Tasting game starts with one person (the "game master") buys and set
-        up a beer tasting without the players knowing which beers they are
-        drinking.
+        The Beer Tasting game starts with one person (the "game master") buys
+        and set up a beer tasting without the players knowing which beers they
+        are drinking.
       </i>
       <br />
       <br />
@@ -30,7 +38,9 @@
           Then sends an invite to the players by sharing a link, or let them
           scan the barcode provided.
         </li>
-        <li class="mb-2">The players join the game and the beer tasting can begin!</li>
+        <li class="mb-2">
+          The players join the game and the beer tasting can begin!
+        </li>
         <li class="mb-2">
           When all beer have been tasted and registrated, the game is over and
           the players will end up on a scoreboard

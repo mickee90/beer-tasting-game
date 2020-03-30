@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 
 import Home from "../views/Home";
 import CreateGame from "../views/CreateGame";
+import FindGame from "../views/FindGame";
 import GameType from "../views/GameType";
 import ChooseBeers from "../views/ChooseBeers";
 import InvitePlayers from "../views/InvitePlayers";
@@ -27,8 +28,13 @@ const routes = [
   },
   {
     path: "/create",
-    name: "create",
+    name: "Create",
     component: CreateGame
+  },
+  {
+    path: "/find-game",
+    name: "FindGame",
+    component: FindGame
   },
   {
     path: "/game-type",
