@@ -21,22 +21,21 @@
       <br />
       <br />
       <i>
-        The Beer Tasting game starts with one person (the "game master") buys
-        and set up a beer tasting without the players knowing which beers they
-        are drinking.
+        Set up a blind-tasting to find out who of your friends knows most about
+        beers!
       </i>
       <br />
       <br />
 
       <ul class="list-disc">
-        <li class="mb-2">Pick one game master who buys X amount of beers.</li>
+        <li class="mb-2">Pick one game master who buys X numbers of beers.</li>
         <li class="mb-2">
           The game master creates a game by entering the name, the beers and
           game type.
         </li>
         <li class="mb-2">
-          Then sends an invite to the players by sharing a link, or let them
-          scan the barcode provided.
+          The players can then scan a QR-code or the game master sends out the
+          link for them to join the game.
         </li>
         <li class="mb-2">
           The players join the game and the beer tasting can begin!
