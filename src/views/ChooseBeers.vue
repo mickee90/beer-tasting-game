@@ -35,7 +35,21 @@
         Or
       </div>
 
-      <button class="btn btn-gray">Scan barcode</button>
+      <button
+        class="btn btn-gray"
+        @click="showBarcodeScanner = !showBarcodeScanner"
+      >
+        Scan barcode
+      </button>
+
+      <v-quagga
+        v-if="showBarcodeScanner"
+        :onDetected="logIt"
+        :readerSize="readerSize"
+        :readerType="'ean_reader'"
+        :aspectRatio="aspectRatio"
+        style="z-index:999"
+      ></v-quagga>
 
       <div class="py-16">
         <chosen-beer-card
@@ -60,7 +74,14 @@ export default {
     return {
       searchWord: "",
       beerSearchResult: null,
-      beers: []
+      beers: [],
+      showBarcodeScanner: false,
+      readerSize: {
+        width: 640,
+        height: 480
+      },
+      aspectRatio: { min: 1, max: 2 },
+      detecteds: []
     };
   },
   methods: {
@@ -72,6 +93,9 @@ export default {
         alert("Something went wrong. Try again");
         return;
       }
+    },
+    logIt(data) {
+      console.log("detected", data);
     },
     onAddedBeer(beer) {
       const response = this.$store.dispatch("addBeer", beer);
