@@ -43,9 +43,8 @@
       </button>
 
       <div>{{ scanData }}</div>
-      <ul>
-        <li v-for="(detect, index) in detecteds" :key="index">{{ detect }}</li>
-      </ul>
+      <div>{{ scanData1 }}</div>
+      <div>{{ scanData2 }}</div>
 
       <v-quagga
         v-if="showBarcodeScanner"
@@ -87,7 +86,9 @@ export default {
       },
       aspectRatio: { min: 1, max: 2 },
       detecteds: [],
-      scanData: "test"
+      scanData: "test",
+      scanData1: "test1",
+      scanData2: "test2"
     };
   },
   methods: {
@@ -103,6 +104,17 @@ export default {
     logIt(data) {
       console.log("detected", data);
       this.scanData = data;
+    },
+    onBarcodeScanned(barcode) {
+      console.log(barcode);
+      this.scanData1 = barcode;
+      // do something...
+    },
+    // Reset to the last barcode before hitting enter (whatever anything in the input box)
+    resetBarcode() {
+      let barcode = this.$barcodeScanner.getPreviousCode();
+      this.scanData2 = barcode;
+      // do something...
     },
     onAddedBeer(beer) {
       const response = this.$store.dispatch("addBeer", beer);
@@ -172,6 +184,11 @@ export default {
   },
   created() {
     this.beers = this.$store.getters.getBeers;
+    this.$barcodeScanner.init(this.onBarcodeScanned);
+  },
+  destroyed() {
+    // Remove listener when component is destroyed
+    this.$barcodeScanner.destroy();
   },
   components: {
     ChosenBeerCard,
