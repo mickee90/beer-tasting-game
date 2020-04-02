@@ -43,8 +43,6 @@
       </button>
 
       <div>{{ scanData }}</div>
-      <div>{{ scanData1 }}</div>
-      <div>{{ scanData2 }}</div>
 
       <v-quagga
         v-if="showBarcodeScanner"
@@ -55,7 +53,7 @@
         style="z-index:999"
       ></v-quagga>
 
-      <div class="py-16">
+      <div class="py-8" v-if="beers.length > 0">
         <chosen-beer-card
           v-for="beer in beers"
           :key="beer.id"
@@ -63,7 +61,10 @@
           @delete="onDelete"
         ></chosen-beer-card>
       </div>
-      <BaseButton @click="onCheckInBeers" :disabled="disabled">Next</BaseButton>
+
+      <BaseButton @click="onCheckInBeers" :disabled="disabled" classes="mt-5"
+        >Next</BaseButton
+      >
     </div>
   </div>
 </template>
@@ -86,9 +87,7 @@ export default {
       },
       aspectRatio: { min: 1, max: 2 },
       detecteds: [],
-      scanData: "test",
-      scanData1: "test1",
-      scanData2: "test2"
+      scanData: ""
     };
   },
   methods: {
@@ -104,17 +103,6 @@ export default {
     logIt(data) {
       console.log("detected", data);
       this.scanData = data;
-    },
-    onBarcodeScanned(barcode) {
-      console.log(barcode);
-      this.scanData1 = barcode;
-      // do something...
-    },
-    // Reset to the last barcode before hitting enter (whatever anything in the input box)
-    resetBarcode() {
-      let barcode = this.$barcodeScanner.getPreviousCode();
-      this.scanData2 = barcode;
-      // do something...
     },
     onAddedBeer(beer) {
       const response = this.$store.dispatch("addBeer", beer);
@@ -184,11 +172,6 @@ export default {
   },
   created() {
     this.beers = this.$store.getters.getBeers;
-    this.$barcodeScanner.init(this.onBarcodeScanned);
-  },
-  destroyed() {
-    // Remove listener when component is destroyed
-    this.$barcodeScanner.destroy();
   },
   components: {
     ChosenBeerCard,

@@ -1,6 +1,9 @@
 <template>
-  <div class="border-b border-gray-300 bg-white mb-5 pb-5" :class="cardHeight">
-    <div class="flex mb-5">
+  <div
+    class="border-b border-gray-300 bg-white pb-5 box-content overflow-hidden relative flex"
+    :class="[cardHeight, { expanded: expanded }]"
+  >
+    <div class="flex mb-5 w-full">
       <div class="w-1/3 flex">
         <img
           :src="`${beer.beer_label}`"
@@ -8,17 +11,17 @@
           class="thumbnail"
         />
       </div>
-      <div class="w-2/3 text-left">
+      <div class="w-2/3 text-left pt-5 pr-5">
         <div class="flex">
           <span v-text="beer.beer_name" class="text-xl"></span>
           <button
-            class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1"
+            class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1 h-full"
             @click.prevent="$emit('addBeer', { beer, brewery })"
           >
             Add
           </button>
         </div>
-        <div class="relative" :class="descHeight">
+        <div :class="descHeight">
           <strong class="block" v-text="brewery.country_name"></strong>
           <slot>{{ beer.beer_description }}</slot>
           <div class="expand-btn" @click="onExpand" v-text="expandText"></div>
@@ -47,7 +50,7 @@ export default {
       return this.expanded === true ? "" : "h-32 overflow-hidden";
     },
     expandText() {
-      return this.expanded === true ? "Collapse..." : "Expand...";
+      return this.expanded === true ? "Collapse" : "Expand";
     }
   },
   methods: {
@@ -76,6 +79,10 @@ export default {
   background: #ffffffc7;
   font-weight: bold;
   font-size: 1rem;
+  line-height: 2rem;
+}
+.expanded .expand-btn {
+  /* bottom: -30px; */
 }
 .expand-btn:hover {
   cursor: pointer;

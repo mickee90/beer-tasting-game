@@ -13,7 +13,7 @@
           :value="gameTypeId"
           :checked="parseInt(selectedGameTypeId) === parseInt(gameTypeId)"
         />
-        <span class>Choose this option</span>
+        <span class>{{ label }}</span>
       </label>
     </div>
   </div>
@@ -21,7 +21,19 @@
 
 <script>
 export default {
-  props: ["header", "gameTypeId", "classes", "disabled", "selectedGameTypeId"]
+  props: [
+    "header",
+    "gameTypeId",
+    "classes",
+    "disabled",
+    "selectedGameTypeId",
+    "customLabel"
+  ],
+  computed: {
+    label() {
+      return this.customLabel ? this.customLabel : "Choose this option";
+    }
+  }
 };
 </script>
 <style scoped>

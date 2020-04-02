@@ -3,7 +3,7 @@
     <h1>Choose game type</h1>
 
     <beer-type-card
-      header="Match with description"
+      header="Match the description"
       gameTypeId="1"
       :disabled="true"
       :selectedGameTypeId="gameTypeId"
@@ -18,6 +18,7 @@
       :selectedGameTypeId="gameTypeId"
       classes="disabled"
       :disabled="true"
+      customLabel="Coming soon"
     >
       The game master enter a question and 2-4 answer alternatives for each
       beer.

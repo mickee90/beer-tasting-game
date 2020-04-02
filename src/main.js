@@ -16,11 +16,9 @@ import VueCarousel from "@chenfengyuan/vue-carousel";
 import Clipboard from "v-clipboard";
 
 import VueQuagga from "vue-quaggajs";
-import VueBarcodeScanner from "vue-barcode-scanner";
 
 // register component 'v-quagga'
 Vue.use(VueQuagga);
-Vue.use(VueBarcodeScanner);
 // import VueApollo from "vue-apollo";
 
 // import ApolloClient from "apollo-client";
