@@ -42,6 +42,11 @@
         Scan barcode
       </button>
 
+      <div>{{ scanData }}</div>
+      <ul>
+        <li v-for="(detect, index) in detecteds" :key="index">{{ detect }}</li>
+      </ul>
+
       <v-quagga
         v-if="showBarcodeScanner"
         :onDetected="logIt"
@@ -81,7 +86,8 @@ export default {
         height: 480
       },
       aspectRatio: { min: 1, max: 2 },
-      detecteds: []
+      detecteds: [],
+      scanData: "test"
     };
   },
   methods: {
@@ -96,6 +102,7 @@ export default {
     },
     logIt(data) {
       console.log("detected", data);
+      this.scanData = data;
     },
     onAddedBeer(beer) {
       const response = this.$store.dispatch("addBeer", beer);

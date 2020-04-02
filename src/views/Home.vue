@@ -2,15 +2,16 @@
   <div>
     <h1>The beer tasting game!</h1>
     <div v-if="backdoor" class="mb-4">
-      <router-link :to="{ name: 'Create' }" class="btn btn-blue"
-        >Start a new game!</router-link
-      >
-      <router-link
-        :to="{ name: 'FindGame' }"
-        class="btn btn-blue"
-        v-if="true === false"
-        >Find game</router-link
-      >
+      <div class="mb-10">
+        <router-link :to="{ name: 'Create' }" class="btn btn-blue"
+          >Start a new game!</router-link
+        >
+      </div>
+      <div>
+        <router-link :to="{ name: 'FindGame' }" class="btn btn-blue"
+          >Find game</router-link
+        >
+      </div>
     </div>
     <div v-else>
       <h3>This site will hopefully be ready soon...</h3>
