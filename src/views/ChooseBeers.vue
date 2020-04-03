@@ -41,6 +41,20 @@
       >
         Scan barcode
       </button>
+      <select v-model="chosenReaderType">
+        <option value="code_128">Code 128</option>
+        <option value="code_39">Code 39</option>
+        <option value="code_39_vin">Code 39 VIN</option>
+        <option value="ean">EAN</option>
+        <option value="ean_extended">EAN-extended</option>
+        <option value="ean_8">EAN-8</option>
+        <option value="upc">UPC</option>
+        <option value="upc_e">UPC-E</option>
+        <option value="codabar">Codabar</option>
+        <option value="i2of5">I2of5</option>
+        <option value="2of5">Standard 2 of 5</option>
+        <option value="code_93">Code 93</option>
+      </select>
 
       <div>{{ scanData }}</div>
 
@@ -48,7 +62,7 @@
         v-if="showBarcodeScanner"
         :onDetected="logIt"
         :readerSize="readerSize"
-        :readerType="'ean_reader'"
+        :readerType="chosenReaderType"
         :aspectRatio="aspectRatio"
         style="z-index:999"
       ></v-quagga>
@@ -87,7 +101,8 @@ export default {
       },
       aspectRatio: { min: 1, max: 2 },
       detecteds: [],
-      scanData: ""
+      scanData: "",
+      chosenReaderType: "ean"
     };
   },
   methods: {
