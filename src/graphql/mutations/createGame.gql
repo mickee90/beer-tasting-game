@@ -17,6 +17,7 @@ mutation createGames(
       game_type_id
       started
       finished
+      pin_code
       ua
       created_at
     }

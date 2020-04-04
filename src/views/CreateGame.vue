@@ -34,19 +34,19 @@ export default {
   data() {
     return {
       name: "",
-      game_master_name: ""
+      game_master_name: "",
     };
   },
   computed: {
     disabled() {
       return this.name.trim() === "" || this.game_master_name.trim() === "";
-    }
+    },
   },
   methods: {
     async onStoreGame() {
       const response = await this.$store.dispatch("createGame", {
         name: this.name,
-        game_master_name: this.game_master_name
+        game_master_name: this.game_master_name,
       });
 
       if (!response) {
@@ -55,11 +55,7 @@ export default {
       }
 
       this.$router.push({ name: "GameType" });
-    }
+    },
   },
-  created() {
-    // this.name = this.$store.getters.getGame.name ?? "";
-    // this.game_master_name = this.$store.getters.getGame.game_master_name ?? "";
-  }
 };
 </script>

@@ -1,0 +1,16 @@
+query searchGame($pinCode: Int!) {
+  games(
+    where: { pin_code: { _eq: $pinCode }, started: { _eq: false } }
+    limit: 1
+  ) {
+    id
+    name
+    game_master_name
+    game_type_id
+    finished
+    pin_code
+    started
+    ua
+    created_at
+  }
+}

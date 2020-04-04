@@ -5,6 +5,7 @@ query getGamePlayingData($id: uuid!, $player_id: Int_comparison_exp) {
     game_type_id
     game_master_name
     finished
+    pin_code
     started
     beers {
       id

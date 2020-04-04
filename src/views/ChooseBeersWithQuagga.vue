@@ -83,20 +83,20 @@ export default {
             width: { min: 640 },
             height: { min: 480 },
             facingMode: "environment",
-            aspectRatio: { min: 1, max: 2 }
-          }
+            aspectRatio: { min: 1, max: 2 },
+          },
         },
         locator: {
           patchSize: "medium",
-          halfSample: true
+          halfSample: true,
         },
         numOfWorkers: 2,
         frequency: 10,
         decoder: {
-          readers: ["ean_reader"]
+          readers: ["ean_reader"],
         },
-        locate: true
-      }
+        locate: true,
+      },
     };
   },
   methods: {
@@ -115,20 +115,20 @@ export default {
             parseInt(drawingCanvas.getAttribute("height"))
           );
           result.boxes
-            .filter(function(box) {
+            .filter(function (box) {
               return box !== result.box;
             })
-            .forEach(function(box) {
+            .forEach(function (box) {
               Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
                 color: "green",
-                lineWidth: 2
+                lineWidth: 2,
               });
             });
         }
         if (result.box) {
           Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
             color: "#00F",
-            lineWidth: 2
+            lineWidth: 2,
           });
         }
         if (result.codeResult && result.codeResult.code) {
@@ -165,18 +165,15 @@ export default {
         return;
       }
 
-      // const beers = this.$store.dispatch("searchBeer", this.searchWord.trim());
       const response = await axios
         .get(`/search/beer?q=${this.searchWord.trim()}`)
-        .then(res => res.data);
+        .then((res) => res.data);
 
       console.log(response);
 
       if (!response || response.response.beers.items.length === 0) return;
 
       this.beerSearchResult = response.response.beers.items;
-
-      // this.beers.push(beer);
     },
     onCheckInBeers() {
       if (this.beers.length === 0) {
@@ -186,19 +183,18 @@ export default {
 
       const game = this.$store.getters.getGame;
 
-      const beers = this.beers.map(beer => {
+      const beers = this.beers.map((beer) => {
         return {
           ...beer,
           game_id: game.id,
           game_type_id: game.game_type_id,
-          correct_answer: beer.number
+          correct_answer: beer.number,
         };
       });
 
       let nextPage = "InvitePlayers";
       if (game.game_type_id === 2) {
         nextPage = "CreateQuestions";
-        //const questions = this.createQuestions(beers);
       }
 
       const response = this.$store.dispatch("storeBeers", beers);
@@ -209,19 +205,19 @@ export default {
       }
 
       this.$router.push({ name: nextPage });
-    }
+    },
   },
   computed: {
     disabled() {
       return this.beers.length < 1;
-    }
+    },
   },
   created() {
     this.beers = this.$store.getters.getBeers;
     console.log(Quagga);
   },
   mounted() {
-    Quagga.init(this.quaggaState, function(err) {
+    Quagga.init(this.quaggaState, function (err) {
       if (err) {
         return console.error(err);
       }
@@ -230,13 +226,13 @@ export default {
     Quagga.onDetected(this.onDetected);
     Quagga.onProcessed(this.onProcessed);
   },
-  destroyed: function() {
+  destroyed: function () {
     Quagga.stop();
   },
   components: {
     ChosenBeerCard,
-    SearchBeerCard
-  }
+    SearchBeerCard,
+  },
 };
 </script>
 

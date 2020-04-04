@@ -1,7 +1,7 @@
 <template>
   <input
     :type="type"
-    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
     :class="classes"
     v-bind="$attrs"
     @input="$emit('update', $event.target.value)"
@@ -19,7 +19,7 @@ export default {
   // the behavior of the native `input` event.
   // https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
   model: {
-    event: "update"
+    event: "update",
   },
   props: {
     type: {
@@ -34,15 +34,15 @@ export default {
           "search",
           "tel",
           "text",
-          "url"
+          "url",
         ].includes(value);
-      }
+      },
     },
     classes: {
       type: String,
-      required: false
-    }
-  }
+      required: false,
+    },
+  },
 };
 </script>
 

@@ -20,6 +20,10 @@
       ></VueQrcode>
     </div>
 
+    <div class="w-100 text-center mx-auto my-2 text-lg mb-5">
+      3. Or let them enter pin code: {{ game.pin_code }}
+    </div>
+
     <router-link :to="{ name: 'StartGame' }" class="btn btn-blue">
       Next
     </router-link>
@@ -32,17 +36,20 @@ import VueQrcode from "@chenfengyuan/vue-qrcode";
 export default {
   data() {
     return {
-      gameUrl: null
+      game: {},
+      gameUrl: null,
     };
   },
   created() {
+    this.game = this.$store.getters.getGame;
+
     this.gameUrl =
       process.env.VUE_APP_HOST_NAME +
       this.$router.resolve({
-        name: "InviteLink"
+        name: "InviteLink",
       }).href +
-      `?hash=${this.$store.getters.getGame.id}`;
+      `?hash=${this.game.id}`;
   },
-  components: { VueQrcode }
+  components: { VueQrcode },
 };
 </script>

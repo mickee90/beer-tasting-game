@@ -2,6 +2,7 @@ query getEverything($id: uuid!) {
   game: games_by_pk(id: $id) {
     id
     name
+    pin_code
     game_type_id
     game_master_name
     finished

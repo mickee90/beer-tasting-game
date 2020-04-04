@@ -1,7 +1,8 @@
 <template>
   <div
     class="border-b border-gray-300 bg-white pb-5 box-content overflow-hidden relative flex"
-    :class="[cardHeight, { expanded: expanded }]"
+    :class="[cardHeight, { expanded: expanded }, `beerTotalHeight-${index}`]"
+    v-if="beer !== undefined"
   >
     <div class="flex mb-5 w-full">
       <div class="w-1/3 flex">
@@ -11,8 +12,8 @@
           class="thumbnail"
         />
       </div>
-      <div class="w-2/3 text-left pt-5 pr-5">
-        <div class="flex">
+      <div class="w-2/3 text-left pr-5">
+        <div class="flex pt-5" :class="`beerTitleHeight-${index}`">
           <span v-text="beer.beer_name" class="text-xl"></span>
           <button
             class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1 h-full"
@@ -21,7 +22,7 @@
             Add
           </button>
         </div>
-        <div :class="descHeight">
+        <div :class="`beerContentHeight-${index}`">
           <strong class="block" v-text="brewery.country_name"></strong>
           <slot>{{ beer.beer_description }}</slot>
           <div class="expand-btn" @click="onExpand" v-text="expandText"></div>
@@ -33,10 +34,11 @@
 
 <script>
 export default {
-  props: ["beer", "brewery"],
+  props: ["beer", "brewery", "index"],
   data() {
     return {
-      expanded: false
+      toHigh: false,
+      expanded: false,
     };
   },
   computed: {
@@ -46,21 +48,33 @@ export default {
     cardHeight() {
       return this.expanded === true ? "h-auto" : "h-40";
     },
-    descHeight() {
-      return this.expanded === true ? "" : "h-32 overflow-hidden";
-    },
     expandText() {
+      if (!this.toHigh) {
+        return "";
+      }
       return this.expanded === true ? "Collapse" : "Expand";
-    }
+    },
   },
   methods: {
     onExpand() {
       this.expanded = !this.expanded;
+    },
+  },
+  mounted() {
+    const beerCardTotalHeight = document.querySelector(
+      `.beerTotalHeight-${this.index}`
+    ).clientHeight;
+    const beerCardTitleHeight = document.querySelector(
+      `.beerTitleHeight-${this.index}`
+    ).clientHeight;
+    const beerCardContentHeight = document.querySelector(
+      `.beerContentHeight-${this.index}`
+    ).clientHeight;
+
+    if (beerCardTotalHeight <= beerCardTitleHeight + beerCardContentHeight) {
+      this.toHigh = true;
     }
   },
-  created() {
-    // console.log(this.beer, this.brewery);
-  }
 };
 </script>
 

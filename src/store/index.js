@@ -34,21 +34,6 @@ const beer_structure = {
   country_name: null,
 };
 
-// const player_answer_structure = {
-//   id: null,
-//   game_id: null,
-//   beer_id: null,
-//   answer: null,
-//   created: null
-// };
-
-// const beer_answer_structure = {
-//   id: null,
-//   game_id: null,
-//   beer_id: null,
-//   question_content: ""
-// };
-
 const defaultState = () => {
   return {
     game: game_structure,
@@ -129,8 +114,6 @@ export default new Vuex.Store({
           console.log(error);
         });
 
-      console.log("res", game);
-
       if (!game) {
         return false;
       }
@@ -161,19 +144,11 @@ export default new Vuex.Store({
     },
     async setGameCompleted({ dispatch, getters }) {
       const game = getters.getGame;
-      // let beers = getters.getBeers;
-      // let playerAnswers = getters.getPlayerAnswers;
-      // console.log(game, beers, playerAnswers);
       const updateGame = await dispatch("updateGame", { finished: true });
 
       if (!updateGame) return;
 
-      // if (beers.length === 0 || playerAnswers.length === 0) {
       await dispatch("fetchAndSetEverything", game.id);
-      // }
-
-      // const players = [];
-      // commit("setPlayers", players);
     },
     async fetchAndSetEverything({ commit, getters }, payload = null) {
       const game = getters.getGame;
@@ -214,7 +189,6 @@ export default new Vuex.Store({
       commit("setBeerAnswers", { ...everything.beer_answers });
     },
     async storeBeers({ commit, getters }, payload) {
-      console.log(payload);
       const gameId = getters.getGame.id;
 
       // Delete the stored beers in case of the game master has chosen then beers but decides to go back and change them
@@ -292,7 +266,6 @@ export default new Vuex.Store({
     },
     addBeer({ commit, getters }, payload) {
       const beer = { ...beer_structure };
-      // console.log(beer, payload);
 
       beer.bid = payload.beer.bid;
       beer.name = payload.beer.beer_name;
@@ -314,7 +287,6 @@ export default new Vuex.Store({
     },
     async storePlayer({ commit, getters }, name) {
       const game_id = getters.getGame.id;
-      console.log("storePlayer");
 
       const player = await apolloClient
         .mutate({
@@ -330,7 +302,6 @@ export default new Vuex.Store({
       if (!player) {
         return false;
       }
-      console.log("storePlayer", player);
 
       commit("addPlayer", { ...player });
       commit("setPlayer", { ...player });
@@ -373,7 +344,6 @@ export default new Vuex.Store({
         .then((res) => res.data.player)
         .catch((err) => console.log(err));
 
-      console.log("currentKey 3", player_response);
       if (!player_response) {
         return false;
       }
@@ -387,13 +357,9 @@ export default new Vuex.Store({
       const game = getters.getGame;
       let player = getters.getPlayer;
 
-      console.log("player", player);
-
       if (player === undefined) {
         player = await dispatch("fetchLocalPlayer");
       }
-      console.log("player", player);
-
       const answer = {
         game_id: game.id,
         beer_id: payload.current_beer_id,
@@ -410,8 +376,6 @@ export default new Vuex.Store({
         })
         .then((res) => res.data.player_answers)
         .catch((err) => console.log("error", err));
-
-      console.log("players", answer_response);
 
       if (!answer_response || answer_response.returning.length === 0) {
         return false;
@@ -447,7 +411,7 @@ export default new Vuex.Store({
       if (player === undefined) {
         player = await dispatch("fetchLocalPlayer");
       }
-      console.log("setPlayerFinishGame");
+
       const player_response = await apolloClient
         .mutate({
           mutation: require("../graphql/mutations/updatePlayer.gql"),
@@ -459,25 +423,19 @@ export default new Vuex.Store({
         .then((res) => res.data.player)
         .catch((err) => console.log(err));
 
-      console.log("setPlayerFinishGame2");
       if (!player_response) return;
 
-      console.log("setPlayerFinishGame3");
       commit("setPlayer", { ...player, ...player_response.returning[0] });
 
-      console.log("setPlayerFinishGame4");
       const playersFetched = await dispatch("fetchPlayers");
 
-      console.log("setPlayerFinishGame5");
       if (!playersFetched) return;
 
-      console.log("setPlayerFinishGame6");
       return true;
     },
     async storePlayerAnswers({ commit, getters }, payload) {
       const game = getters.getGame;
       let player = getters.getPlayer;
-      console.log("player", player);
 
       if (player === undefined) {
         let currentKey = localStorage.getItem("myBeerTastingGameKey");
@@ -495,7 +453,6 @@ export default new Vuex.Store({
           .then((res) => res.data.player)
           .catch((err) => console.log(err));
 
-        console.log("currentKey 3", player_response);
         if (!player_response) {
           return false;
         }

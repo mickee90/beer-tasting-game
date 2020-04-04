@@ -14,13 +14,13 @@ export default {
   props: {
     classes: {
       type: String,
-      required: false
+      required: false,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 };
 </script>
 

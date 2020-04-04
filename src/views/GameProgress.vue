@@ -19,9 +19,9 @@
 
     <BaseButton class="btn btn-blue" @click="goToNext" :disabled="!gameDone">
       {{
-      gameDone === true
-      ? goToNextTitle
-      : "Waiting for the players to drink up..."
+        gameDone === true
+          ? goToNextTitle
+          : "Waiting for the players to drink up..."
       }}
     </BaseButton>
   </div>
@@ -35,7 +35,7 @@ export default {
       beers: [],
       player_answers: [],
       game: null,
-      loading: 0
+      loading: 0,
     };
   },
   methods: {
@@ -71,29 +71,15 @@ export default {
         // @todo prepare for other game types which might need manuall checking of results (e.g. redirect to CollectAnswers)
         this.$router.push({ name: "Scoreboard" });
       }
-    }
-    // async onStartGame() {
-    //   const response = await this.$store.dispatch("updateGame", {
-    //     started: true
-    //   });
-    //   if (!response) {
-    //     alert("Something went wrong. Try again");
-    //     return;
-    //   }
-    //   this.$router.push({ name: "GameProgress" });
-    // },
-    // onGoToGame() {
-    //   this.$router.push({ name: "GameProgress" });
-    // }
+    },
   },
   computed: {
     gameDone() {
-      if (this.game.beers.length === 0) return;
+      if (this.game.players.length === 0) return;
 
-      console.log(this.game.beers);
       return (
-        this.game.beers.filter(beer => beer.finished === true).length ===
-        this.game.beers.length
+        this.game.players.filter((player) => player.finished === true)
+          .length === this.game.players.length
       );
     },
     goToNextTitle() {
@@ -103,32 +89,31 @@ export default {
         // @todo prepare for other game types which might need manuall checking of results
         return "Everyone is finished. Let's collect the answers.";
       }
-    }
+    },
   },
   apollo: {
     game: {
       query: require("../graphql/queries/getEverything.gql"),
       variables() {
         return {
-          id: store.getters.getGame.id
+          id: store.getters.getGame.id,
         };
       },
       update(data) {
         const game = data.game;
-        const beers = game.beers.map(beer => {
+        const beers = game.beers.map((beer) => {
           const answers = game.player_answers.filter(
-            answer => answer.beer_id === beer.id
+            (answer) => answer.beer_id === beer.id
           );
 
           // @todo should not be possible with more answers than number of players
           // Make sure we can change this to === later
           return {
             ...beer,
-            finished: answers.length >= game.players.length
+            finished:
+              answers.length === game.players.length * game.beers.length,
           };
         });
-
-        console.log("beers", beers);
 
         return { ...data.game, beers: beers };
       },
@@ -137,32 +122,31 @@ export default {
           document: require("../graphql/subscriptions/subscribeEverything.gql"),
           variables() {
             return {
-              game_id: store.getters.getGame.id
+              game_id: store.getters.getGame.id,
             };
           },
           updateQuery: (previous, { subscriptionData }) => {
             const game = subscriptionData.data.game;
 
-            const beers = game.beers.map(beer => {
+            const beers = game.beers.map((beer) => {
               const answers = game.player_answers.filter(
-                answer => answer.beer_id === beer.id
+                (answer) => answer.beer_id === beer.id
               );
 
               // @todo should not be possible with more answers than number of players
               // Make sure we can change this to === later
               return {
                 ...beer,
-                finished: answers.length >= game.players.length
+                finished:
+                  answers.length === game.players.length * game.beers.length,
               };
             });
 
-            console.log("subscriotion", { ...subscriptionData.data, ...beers });
-
             return { ...subscriptionData.data, ...beers };
-          }
-        }
-      ]
-    }
-  }
+          },
+        },
+      ],
+    },
+  },
 };
 </script>

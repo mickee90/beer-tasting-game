@@ -6,6 +6,7 @@ subscription subscribeGame($id: uuid!) {
     game_master_name
     finished
     started
+    pin_code
     ua
     created_at
   }

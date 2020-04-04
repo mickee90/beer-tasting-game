@@ -7,6 +7,7 @@ mutation updateGame($id: uuid!, $set: games_set_input!) {
       game_type_id
       finished
       started
+      pin_code
       ua
       created_at
     }

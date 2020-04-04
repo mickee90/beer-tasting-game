@@ -6,6 +6,7 @@ subscription getGameAndPlayers($game_id: uuid!) {
     game_type_id
     finished
     started
+    pin_code
     ua
     created_at
     players {

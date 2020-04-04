@@ -6,6 +6,7 @@ subscription($game_id: uuid!) {
     game_type_id
     finished
     started
+    pin_code
     ua
     created_at
     players(where: { game_id: { _eq: $game_id } }) {

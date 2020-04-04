@@ -9,7 +9,7 @@
 
         <BaseInputText
           type="text"
-          classes="text-center"
+          classes="text-center w-full"
           id="beerSearch"
           v-model="searchWord"
           @keyup.enter="onSearch"
@@ -19,11 +19,12 @@
 
         <div v-if="beerSearchResult !== null">
           <SearchBeerCard
-            v-for="item in beerSearchResult"
+            v-for="(item, index) in beerSearchResult"
             :key="item.beer.bid"
             :beer="item.beer"
             :brewery="item.brewery"
             :add="true"
+            :index="index"
             @addBeer="onAddedBeer"
           />
         </div>
@@ -31,9 +32,10 @@
 
       <div class="py-8" v-if="beers.length > 0">
         <chosen-beer-card
-          v-for="beer in beers"
+          v-for="(beer, index) in beers"
           :key="beer.id"
           :beer="beer"
+          :index="index"
           @delete="onDelete"
         ></chosen-beer-card>
       </div>
@@ -55,7 +57,7 @@ export default {
     return {
       searchWord: "",
       beerSearchResult: null,
-      beers: []
+      beers: [],
     };
   },
   methods: {
@@ -83,18 +85,13 @@ export default {
         return;
       }
 
-      // const beers = this.$store.dispatch("searchBeer", this.searchWord.trim());
       const response = await axios
         .get(`/search/beer?q=${this.searchWord.trim()}`)
-        .then(res => res.data);
-
-      console.log(response);
+        .then((res) => res.data);
 
       if (!response || response.response.beers.items.length === 0) return;
 
       this.beerSearchResult = response.response.beers.items;
-
-      // this.beers.push(beer);
     },
     onCheckInBeers() {
       if (this.beers.length === 0) {
@@ -104,19 +101,18 @@ export default {
 
       const game = this.$store.getters.getGame;
 
-      const beers = this.beers.map(beer => {
+      const beers = this.beers.map((beer) => {
         return {
           ...beer,
           game_id: game.id,
           game_type_id: game.game_type_id,
-          correct_answer: beer.number
+          correct_answer: beer.number,
         };
       });
 
       let nextPage = "InvitePlayers";
       if (game.game_type_id === 2) {
         nextPage = "CreateQuestions";
-        //const questions = this.createQuestions(beers);
       }
 
       const response = this.$store.dispatch("storeBeers", beers);
@@ -127,19 +123,19 @@ export default {
       }
 
       this.$router.push({ name: nextPage });
-    }
+    },
   },
   computed: {
     disabled() {
       return this.beers.length < 1;
-    }
+    },
   },
   created() {
     this.beers = this.$store.getters.getBeers;
   },
   components: {
     ChosenBeerCard,
-    SearchBeerCard
-  }
+    SearchBeerCard,
+  },
 };
 </script>
