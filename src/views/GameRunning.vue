@@ -13,6 +13,7 @@
         :beer="beer"
         :beers="beers"
         :index="index+1"
+        :done="done"
         :currentBeer="currentBeer"
         @selectedBeer="selectedBeer"
         @submitAnswers="onSubmittedAnswers"
@@ -35,7 +36,8 @@ export default {
     };
   },
   methods: {
-    selectedBeer(beer) {
+    async selectedBeer(beer) {
+      console.log("selectedBeer");
       const currentBeerId = this.beers[this.currentBeer - 1].id;
       // const existingIndex = this.playerAnswers.findIndex(
       //   answer => answer.current_beer_id === currentBeerId
@@ -46,37 +48,44 @@ export default {
         beer_id: beer.id
       };
 
+      console.log("selectedBeer2");
+      const result = await this.$store.dispatch("storePlayerAnswer", answer);
+
+      if (!result) {
+        alert("Something went wrong. Reload and try again");
+        return;
+      }
       // if (existingIndex) {
       //   this.playerAnswers.splice(existingIndex, 1, {
       //     ...this.playerAnswers[existingIndex],
       //     ...answer
       //   });
       // } else {
-      this.playerAnswers.push(answer);
+      // this.playerAnswers.push(answer);
       // }
 
+      console.log("selectedBeer3");
       if (this.currentBeer === this.beers.length) {
         this.done = true;
+
+        console.log("selectedBeer4");
         return;
       }
 
+      console.log("selectedBeer5");
       scrollTo(0, 0);
       this.currentBeer++;
     },
     async onSubmittedAnswers() {
+      console.log("onSubmittedAnswers");
       if (!this.done) return;
 
-      console.log("this.playerAnswers", this.playerAnswers);
-
-      const result = await this.$store.dispatch(
-        "storePlayerAnswers",
-        this.playerAnswers
-      );
-
-      if (!result) {
+      const finished = await this.$store.dispatch("setPlayerFinishGame");
+      if (!finished) {
         alert("Something went wrong. Reload and try again");
         return;
       }
+      console.log("onSubmittedAnswers2");
 
       this.$router.push({ name: "AwaitResults" });
     }

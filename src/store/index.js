@@ -5,7 +5,7 @@ import apolloClient from "../apollo";
 
 const VuexPersist = new VuexPersistance({
   key: "vuex-beer-tasting-game",
-  storage: window.localStorage
+  storage: window.localStorage,
 });
 
 Vue.use(Vuex);
@@ -16,7 +16,7 @@ const game_structure = {
   game_master_name: null,
   started: false,
   finished: false,
-  ua: null
+  ua: null,
 };
 
 const beer_structure = {
@@ -31,7 +31,7 @@ const beer_structure = {
   description: null,
   image: null,
   brewery_name: null,
-  country_name: null
+  country_name: null,
 };
 
 // const player_answer_structure = {
@@ -52,10 +52,11 @@ const beer_structure = {
 const defaultState = () => {
   return {
     game: game_structure,
+    player: {},
     beers: [],
     players: [],
     player_answers: [],
-    beer_answers: []
+    beer_answers: [],
   };
 };
 
@@ -99,22 +100,36 @@ export default new Vuex.Store({
     },
     resetStore(state) {
       Object.assign(state, defaultState());
-    }
+    },
   },
   actions: {
-    async createGame({ commit }, payload) {
+    resetStore({ commit }) {
       commit("resetStore");
+    },
+    async createGame({ commit, dispatch }, payload) {
+      commit("resetStore");
+      const pin_code = Math.floor(1000 + Math.random() * 9000);
 
       const game = await apolloClient
         .mutate({
           mutation: require("../graphql/mutations/createGame.gql"),
           variables: {
             name: payload.name,
-            game_master_name: payload.game_master_name
-          }
+            game_master_name: payload.game_master_name,
+            pin_code: pin_code,
+          },
         })
-        .then(res => res.data.game.returning[0])
-        .catch(err => console.log(err));
+        .then((res) => res.data.game.returning[0])
+        .catch((error) => {
+          if (
+            error.graphQLErrors[0].extensions.code === "constraint-violation"
+          ) {
+            dispatch("createGame", { ...payload });
+          }
+          console.log(error);
+        });
+
+      console.log("res", game);
 
       if (!game) {
         return false;
@@ -130,11 +145,11 @@ export default new Vuex.Store({
           mutation: require("../graphql/mutations/updateGame.gql"),
           variables: {
             id: getters.getGame.id,
-            set: payload
-          }
+            set: payload,
+          },
         })
-        .then(res => res.data.game.returning[0])
-        .catch(err => console.log(err));
+        .then((res) => res.data.game.returning[0])
+        .catch((err) => console.log(err));
 
       if (!game) {
         return false;
@@ -167,23 +182,23 @@ export default new Vuex.Store({
         .query({
           query: require("../graphql/queries/getEverything.gql"),
           variables: {
-            id: gameId
-          }
+            id: gameId,
+          },
         })
-        .then(res => res.data.game)
-        .catch(err => console.log(err));
+        .then((res) => res.data.game)
+        .catch((err) => console.log(err));
 
       if (!everything) return;
 
-      const players = await everything.players.map(player => {
+      const players = await everything.players.map((player) => {
         const playerAnswers = everything.player_answers.filter(
-          playerAnswer => (playerAnswer.id = player.id)
+          (playerAnswer) => (playerAnswer.id = player.id)
         );
 
         if (playerAnswers.length === 0) return;
 
-        const correct_answers = everything.beers.filter(beer => {
-          return playerAnswers.find(answer => {
+        const correct_answers = everything.beers.filter((beer) => {
+          return playerAnswers.find((answer) => {
             return (
               parseInt(answer.answer) === parseInt(beer.correct_answer) &&
               answer.player_id === player.id
@@ -203,7 +218,7 @@ export default new Vuex.Store({
       const gameId = getters.getGame.id;
 
       // Delete the stored beers in case of the game master has chosen then beers but decides to go back and change them
-      payload.map(beer => {
+      payload.map((beer) => {
         delete beer.id;
         delete beer.__typename;
 
@@ -212,8 +227,8 @@ export default new Vuex.Store({
       await apolloClient.mutate({
         mutation: require("../graphql/mutations/deleteBeers.gql"),
         variables: {
-          game_id: gameId
-        }
+          game_id: gameId,
+        },
       });
 
       commit("setBeers", []);
@@ -222,11 +237,11 @@ export default new Vuex.Store({
         .mutate({
           mutation: require("../graphql/mutations/storeBeers.gql"),
           variables: {
-            objects: payload
-          }
+            objects: payload,
+          },
         })
-        .then(res => res.data.beers)
-        .catch(err => console.log(err));
+        .then((res) => res.data.beers)
+        .catch((err) => console.log(err));
 
       if (!beers_response || beers_response.returning.length === 0) {
         return false;
@@ -237,12 +252,12 @@ export default new Vuex.Store({
       commit("setBeers", beers);
 
       const beer_answers = [];
-      beers.forEach(beer => {
+      beers.forEach((beer) => {
         for (let i = 0; i < beers.length; i++) {
           beer_answers.push({
             game_id: gameId,
             beer_id: beer.id,
-            question_content: `${i + 1}`
+            question_content: `${i + 1}`,
           });
         }
       });
@@ -250,8 +265,8 @@ export default new Vuex.Store({
       await apolloClient.mutate({
         mutation: require("../graphql/mutations/deleteBeerAnswers.gql"),
         variables: {
-          game_id: gameId
-        }
+          game_id: gameId,
+        },
       });
 
       commit("setBeerAnswers", []);
@@ -260,11 +275,11 @@ export default new Vuex.Store({
         .mutate({
           mutation: require("../graphql/mutations/storeBeerAnswers.gql"),
           variables: {
-            objects: beer_answers
-          }
+            objects: beer_answers,
+          },
         })
-        .then(res => res.data.beer_answers)
-        .catch(err => console.log(err));
+        .then((res) => res.data.beer_answers)
+        .catch((err) => console.log(err));
 
       if (
         !beer_answers_response ||
@@ -291,31 +306,31 @@ export default new Vuex.Store({
       commit("addBeer", beer);
     },
     removeBeer({ commit, getters }, beerId) {
-      const index = getters.getBeers.findIndex(beer => beer.id === beerId);
+      const index = getters.getBeers.findIndex((beer) => beer.id === beerId);
       commit("removeBeer", index);
     },
     storePlayers({ commit }, payload) {
-      commit("setPlayers", { ...payload });
+      commit("setPlayers", [...payload]);
     },
     async storePlayer({ commit, getters }, name) {
       const game_id = getters.getGame.id;
+      console.log("storePlayer");
 
       const player = await apolloClient
         .mutate({
           mutation: require("../graphql/mutations/storePlayer.gql"),
           variables: {
             name,
-            game_id
-          }
+            game_id,
+          },
         })
-        .then(res => res.data.player.returning[0])
-        .catch(err => console.log(err));
-
-      console.log(player);
+        .then((res) => res.data.player.returning[0])
+        .catch((err) => console.log(err));
 
       if (!player) {
         return false;
       }
+      console.log("storePlayer", player);
 
       commit("addPlayer", { ...player });
       commit("setPlayer", { ...player });
@@ -330,7 +345,7 @@ export default new Vuex.Store({
         "myBeerTastingGameKey",
         JSON.stringify({
           game_id,
-          player_id: player.id
+          player_id: player.id,
         })
       );
 
@@ -338,9 +353,126 @@ export default new Vuex.Store({
     },
     removePlayer({ commit, getters }, playerId) {
       const index = getters.getPlayers.findIndex(
-        player => player.id === playerId
+        (player) => player.id === playerId
       );
       commit("removePlayer", index);
+    },
+    async fetchLocalPlayer({ commit }) {
+      let currentKey = localStorage.getItem("myBeerTastingGameKey");
+
+      if (currentKey === null || currentKey === undefined) return false;
+      currentKey = JSON.parse(currentKey);
+
+      const player_response = await apolloClient
+        .query({
+          query: require("../graphql/queries/getPlayer.gql"),
+          variables: {
+            id: currentKey.player_id,
+          },
+        })
+        .then((res) => res.data.player)
+        .catch((err) => console.log(err));
+
+      console.log("currentKey 3", player_response);
+      if (!player_response) {
+        return false;
+      }
+      const player = player_response;
+
+      commit("setPlayer", player);
+
+      return player;
+    },
+    async storePlayerAnswer({ commit, getters, dispatch }, payload) {
+      const game = getters.getGame;
+      let player = getters.getPlayer;
+
+      console.log("player", player);
+
+      if (player === undefined) {
+        player = await dispatch("fetchLocalPlayer");
+      }
+      console.log("player", player);
+
+      const answer = {
+        game_id: game.id,
+        beer_id: payload.current_beer_id,
+        player_id: player.id,
+        answer: payload.answer,
+      };
+
+      const answer_response = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/storePlayerAnswers.gql"),
+          variables: {
+            objects: answer,
+          },
+        })
+        .then((res) => res.data.player_answers)
+        .catch((err) => console.log("error", err));
+
+      console.log("players", answer_response);
+
+      if (!answer_response || answer_response.returning.length === 0) {
+        return false;
+      }
+
+      commit("addPlayerAnswers", [...answer_response.returning]);
+
+      return true;
+    },
+    async fetchPlayers({ getters, commit }) {
+      const game = getters.getGame;
+      let players = getters.getPlayers;
+
+      players = await apolloClient
+        .query({
+          query: require("../graphql/queries/getPlayers.gql"),
+          variables: {
+            game_id: game.id,
+          },
+        })
+        .then((res) => res.data.players)
+        .catch((err) => console.log("error", err));
+
+      if (!players) return;
+
+      commit("setPlayers", [...players]);
+
+      return true;
+    },
+    async setPlayerFinishGame({ getters, dispatch, commit }) {
+      let player = getters.getPlayer;
+
+      if (player === undefined) {
+        player = await dispatch("fetchLocalPlayer");
+      }
+      console.log("setPlayerFinishGame");
+      const player_response = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/updatePlayer.gql"),
+          variables: {
+            id: player.id,
+            set: { finished: true },
+          },
+        })
+        .then((res) => res.data.player)
+        .catch((err) => console.log(err));
+
+      console.log("setPlayerFinishGame2");
+      if (!player_response) return;
+
+      console.log("setPlayerFinishGame3");
+      commit("setPlayer", { ...player, ...player_response.returning[0] });
+
+      console.log("setPlayerFinishGame4");
+      const playersFetched = await dispatch("fetchPlayers");
+
+      console.log("setPlayerFinishGame5");
+      if (!playersFetched) return;
+
+      console.log("setPlayerFinishGame6");
+      return true;
     },
     async storePlayerAnswers({ commit, getters }, payload) {
       const game = getters.getGame;
@@ -357,11 +489,11 @@ export default new Vuex.Store({
           .query({
             query: require("../graphql/queries/getPlayer.gql"),
             variables: {
-              id: currentKey.player_id
-            }
+              id: currentKey.player_id,
+            },
           })
-          .then(res => res.data.player)
-          .catch(err => console.log(err));
+          .then((res) => res.data.player)
+          .catch((err) => console.log(err));
 
         console.log("currentKey 3", player_response);
         if (!player_response) {
@@ -371,12 +503,12 @@ export default new Vuex.Store({
       }
 
       const answers = [];
-      payload.forEach(answer => {
+      payload.forEach((answer) => {
         answers.push({
           game_id: game.id,
           beer_id: answer.current_beer_id,
           player_id: player.id,
-          answer: answer.answer
+          answer: answer.answer,
         });
       });
 
@@ -384,11 +516,11 @@ export default new Vuex.Store({
         .mutate({
           mutation: require("../graphql/mutations/storePlayerAnswers.gql"),
           variables: {
-            objects: answers
-          }
+            objects: answers,
+          },
         })
-        .then(res => res.data.player_answers)
-        .catch(err => console.log(err));
+        .then((res) => res.data.player_answers)
+        .catch((err) => console.log(err));
 
       if (!answer_response || answer_response.returning.length === 0) {
         return false;
@@ -401,11 +533,11 @@ export default new Vuex.Store({
           mutation: require("../graphql/mutations/updatePlayer.gql"),
           variables: {
             id: player.id,
-            set: { finished: true }
-          }
+            set: { finished: true },
+          },
         })
-        .then(res => res.data.player)
-        .catch(err => console.log(err));
+        .then((res) => res.data.player)
+        .catch((err) => console.log(err));
 
       if (!player_response) return;
 
@@ -418,16 +550,16 @@ export default new Vuex.Store({
           .query({
             query: require("../graphql/queries/getPlayers.gql"),
             variables: {
-              game_id: game.id
-            }
+              game_id: game.id,
+            },
           })
-          .then(res => res.data.players)
-          .catch(err => console.log(err));
+          .then((res) => res.data.players)
+          .catch((err) => console.log(err));
 
         if (!players) return;
       }
 
-      players = players.map(player => {
+      players = players.map((player) => {
         if (player.id !== player_response.id) return player;
 
         return { ...player, ...player_response };
@@ -436,7 +568,7 @@ export default new Vuex.Store({
       commit("setPlayers", players);
 
       return true;
-    }
+    },
   },
   getters: {
     getGame(state) {
@@ -456,8 +588,8 @@ export default new Vuex.Store({
     },
     getPlayerAnswers(state) {
       return state.player_answers;
-    }
+    },
   },
   modules: {},
-  plugins: [VuexPersist.plugin]
+  plugins: [VuexPersist.plugin],
 });

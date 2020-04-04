@@ -20,11 +20,6 @@
       ></VueQrcode>
     </div>
 
-    <div class="w-100 text-center  mx-auto my-5 text-lg">
-      3. Or let them enter this in their browser by hand...
-    </div>
-    <div class="flex mb-10">{{ gameUrl }}</div>
-
     <router-link :to="{ name: 'StartGame' }" class="btn btn-blue">
       Next
     </router-link>

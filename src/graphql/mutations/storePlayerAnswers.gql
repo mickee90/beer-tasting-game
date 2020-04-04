@@ -1,5 +1,11 @@
 mutation storePlayerAnswers($objects: [player_answers_insert_input!]!) {
-  player_answers: insert_player_answers(objects: $objects) {
+  player_answers: insert_player_answers(
+    objects: $objects
+    on_conflict: {
+      constraint: player_answers_game_id_beer_id_player_id_key
+      update_columns: answer
+    }
+  ) {
     returning {
       id
       player_id

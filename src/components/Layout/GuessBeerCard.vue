@@ -9,18 +9,12 @@
       </div>
       <div class="w-2/3 text-left pr-5">
         <div class="flex">
-          <span
-            v-text="title"
-            class="text-xl"
-            :class="{ 'font-bold': selected }"
-          ></span>
+          <span v-text="beer.name" class="text-xl" :class="{ 'font-bold': selected }"></span>
           <button
             class="btn btn-blue ml-auto px-2 py-1 text-xs mt-1 h-full"
             @click.prevent="$emit('selectBeer', beer)"
             :class="{ 'opacity-50 cursor-not-allowed': selected }"
-          >
-            {{ selected ? "This one!" : "Choose" }}
-          </button>
+          >{{ selected ? "This one!" : "Choose" }}</button>
         </div>
         <div :class="descHeight">
           <strong class="block" v-text="beer.country"></strong>

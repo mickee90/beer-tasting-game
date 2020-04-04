@@ -1,5 +1,9 @@
 <template>
-  <div class="game_field" v-if="currentBeer === index">
+  <div v-if="done === true">
+    <h3>No more beers :(</h3>
+    <button class="btn btn-blue mt-5" @click="$emit('submitAnswers')">Submit answers</button>
+  </div>
+  <div class="game_field" v-else-if="currentBeer === index">
     <h1>Beer #{{ beer.number }}</h1>
     <div>
       <label for="beerSearch">Which beer is it?</label>
@@ -18,7 +22,7 @@
           :disabled="selectedBeer === null"
           :class="{'opacity-50 cursor-not-allowed': selectedBeer === null}"
           @click="goToNext"
-        >{{ lastBeer === true ? 'Submit answers' : 'Next' }}</button>
+        >{{ done === true ? 'Submit answers' : 'Next' }}</button>
       </div>
     </div>
   </div>
@@ -27,7 +31,7 @@
 <script>
 import GuessBeerCard from "./GuessBeerCard";
 export default {
-  props: ["beers", "beer", "currentBeer", "index"],
+  props: ["beers", "beer", "currentBeer", "index", "done"],
   data() {
     return {
       selectedBeer: null

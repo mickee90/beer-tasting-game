@@ -8,9 +8,7 @@
         :key="player.id"
       >
         <div class="text-xl">
-          <div class="card-header">
-            Player #{{ index + 1 }} - {{ player.name }}
-          </div>
+          <div class="card-header">Player #{{ index + 1 }} - {{ player.name }}</div>
         </div>
       </div>
     </div>
@@ -19,16 +17,11 @@
       <BaseButton
         v-if="!gameAndPlayers.started && gameAndPlayers.players.length === 0"
         :disabled="true"
-        >Wait for players</BaseButton
-      >
+      >Wait for players</BaseButton>
 
-      <BaseButton v-else-if="!gameAndPlayers.started" @click="onStartGame"
-        >Start the game!</BaseButton
-      >
+      <BaseButton v-else-if="!gameAndPlayers.started" @click="onStartGame">Start the game!</BaseButton>
 
-      <BaseButton v-else @click="onGoToGame">
-        The game is running. Check the status.</BaseButton
-      >
+      <BaseButton v-else @click="onGoToGame">The game is running. Check the status.</BaseButton>
     </div>
   </div>
 </template>

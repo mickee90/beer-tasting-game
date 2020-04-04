@@ -6,19 +6,16 @@
     <div v-if="game">
       <h1>Welcome to {{ game.name }}</h1>
 
-      <div v-if="game.started === true">
-        Sorry but the game has already started...
-      </div>
+      <div v-if="game.started === true">Sorry but the game has already started...</div>
       <div v-else-if="alreadyJoined === true">
         <div class="mb-5">Your game is already running.</div>
-        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue"
-          >Get back to the game</router-link
-        >
+        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue">Get back to the game</router-link>
       </div>
       <div class="mb-4" v-else>
-        <label for="playerName" class="block text-gray-700 font-bold mb-2"
-          >Enter your name to join the game</label
-        >
+        <label
+          for="playerName"
+          class="block text-gray-700 font-bold mb-2"
+        >Enter your name to join the game</label>
         <BaseInputText
           type="text"
           classes="text-center w-3/4"
@@ -27,9 +24,7 @@
           placeholder="Your name"
           required
         />
-        <BaseButton @click="onJoinGame" :disabled="disabled" classes="mt-4"
-          >Join the game</BaseButton
-        >
+        <BaseButton @click="onJoinGame" :disabled="disabled" classes="mt-4">Join the game</BaseButton>
       </div>
     </div>
   </div>
@@ -70,6 +65,7 @@ export default {
   },
   async created() {
     this.loading = true;
+    this.$store.dispatch("resetStore");
 
     const hash = this.$route.query.hash;
 

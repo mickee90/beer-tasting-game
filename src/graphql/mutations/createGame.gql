@@ -1,6 +1,14 @@
-mutation createGames($name: String!, $game_master_name: String!) {
+mutation createGames(
+  $name: String!
+  $game_master_name: String!
+  $pin_code: Int!
+) {
   game: insert_games(
-    objects: { name: $name, game_master_name: $game_master_name }
+    objects: {
+      name: $name
+      game_master_name: $game_master_name
+      pin_code: $pin_code
+    }
   ) {
     returning {
       id

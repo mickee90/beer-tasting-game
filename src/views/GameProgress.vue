@@ -19,9 +19,9 @@
 
     <BaseButton class="btn btn-blue" @click="goToNext" :disabled="!gameDone">
       {{
-        gameDone === true
-          ? goToNextTitle
-          : "Waiting for the players to drink up..."
+      gameDone === true
+      ? goToNextTitle
+      : "Waiting for the players to drink up..."
       }}
     </BaseButton>
   </div>
@@ -155,6 +155,8 @@ export default {
                 finished: answers.length >= game.players.length
               };
             });
+
+            console.log("subscriotion", { ...subscriptionData.data, ...beers });
 
             return { ...subscriptionData.data, ...beers };
           }

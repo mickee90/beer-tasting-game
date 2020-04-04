@@ -2,9 +2,7 @@
   <div v-if="!loading">
     <div v-if="gameAndPlayers.finished === true">
       <h1>The game has ended</h1>
-      <router-link :to="{ name: 'Scoreboard' }" class="btn btn-blue"
-        >Go to scoreboard</router-link
-      >
+      <router-link :to="{ name: 'Scoreboard' }" class="btn btn-blue">Go to scoreboard</router-link>
     </div>
     <div v-else>
       <h1>Waiting for the game to start</h1>
@@ -15,9 +13,7 @@
           :key="player.id"
         >
           <div class="text-xl">
-            <div class="card-header">
-              Player #{{ index + 1 }} - {{ player.name }}
-            </div>
+            <div class="card-header">Player #{{ index + 1 }} - {{ player.name }}</div>
           </div>
         </div>
       </div>
@@ -27,9 +23,10 @@
         started the game
       </div>
 
-      <BaseButton @click="onStartGame" :disabled="!gameAndPlayers.started">
-        {{ !gameAndPlayers.started ? "Waiting..." : "Bring out the beer!" }}
-      </BaseButton>
+      <BaseButton
+        @click="onStartGame"
+        :disabled="!gameAndPlayers.started"
+      >{{ !gameAndPlayers.started ? "Waiting..." : "Bring out the beer!" }}</BaseButton>
     </div>
   </div>
 </template>
@@ -74,21 +71,5 @@ export default {
       ]
     }
   }
-  // apollo: {
-  //   $subscribe: {
-  //     gameAndPlayers: {
-  //       query: require("../graphql/subscriptions/subscribeGameAndPlayers.gql"),
-  //       variables: {
-  //         game_id: store.getters.getGame.id
-  //       },
-  //       result(data) {
-  //         const game = data.data.game;
-
-  //         this.game = { ...game };
-  //         this.players = game.players;
-  //       }
-  //     }
-  //   }
-  // }
 };
 </script>
