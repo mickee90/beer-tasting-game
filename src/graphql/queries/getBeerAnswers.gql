@@ -1,0 +1,9 @@
+query getBeerAnswers($game_id: uuid!) {
+  beer_answers(where: { game_id: { _eq: $game_id } }) {
+    id
+    game_id
+    beer_id
+    question_content
+    sort_order
+  }
+}

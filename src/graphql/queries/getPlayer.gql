@@ -6,5 +6,12 @@ query getPlayer($id: Int!) {
     game_id
     finished
     created_at
+    player_answers {
+      id
+      player_id
+      game_id
+      beer_id
+      answer
+    }
   }
 }

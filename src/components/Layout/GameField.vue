@@ -6,12 +6,14 @@
       <br />
       <br />
       <guess-beer-card
-        v-for="(beer, index) in beers"
-        :key="beer.id"
-        :beer="beer"
+        v-for="(beer_answer, index) in beer.beer_answers"
+        :key="beer_answer.id"
+        :beer="beer_answer.beer"
         :index="index"
         @selectBeer="onSelectBeer"
-        :selected="selectedBeer !== null && selectedBeer.id === beer.id"
+        :selected="
+          selectedBeer !== null && selectedBeer.id === beer_answer.beer.id
+        "
       />
       <div>
         <button
@@ -30,7 +32,7 @@
 <script>
 import GuessBeerCard from "./GuessBeerCard";
 export default {
-  props: ["beers", "beer", "currentBeer", "index", "done"],
+  props: ["beer", "currentBeer", "index", "done"],
   data() {
     return {
       selectedBeer: null,
@@ -41,7 +43,7 @@ export default {
       return `#${this.beer.number} ${this.beer.name}`;
     },
     lastBeer() {
-      return this.currentBeer === this.beers.length;
+      return this.currentBeer === this.beer.beer_answers.length;
     },
   },
   methods: {

@@ -24,16 +24,16 @@
 export default {
   data() {
     return {
-      players: []
+      players: [],
     };
   },
-  async created() {
+  async mounted() {
     await this.$store.dispatch("setGameCompleted");
 
     const players = this.$store.getters.getPlayers;
     this.players = players.sort((a, b) =>
       a.score < b.score ? 1 : b.score < a.score ? -1 : 0
     );
-  }
+  },
 };
 </script>

@@ -35,9 +35,10 @@ subscription getGameAndPlayers($game_id: uuid!) {
     }
     beer_answers {
       id
-      question_content
       game_id
       beer_id
+      question_content
+      sort_order
     }
     player_answers {
       id

@@ -33,6 +33,7 @@ query getGamePlayingData($id: uuid!, $player_id: Int_comparison_exp) {
       game_id
       id
       question_content
+      sort_order
     }
     player_answers {
       answer

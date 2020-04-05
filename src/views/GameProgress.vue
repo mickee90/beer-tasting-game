@@ -106,12 +106,9 @@ export default {
             (answer) => answer.beer_id === beer.id
           );
 
-          // @todo should not be possible with more answers than number of players
-          // Make sure we can change this to === later
           return {
             ...beer,
-            finished:
-              answers.length === game.players.length * game.beers.length,
+            finished: answers.length === game.players.length,
           };
         });
 
@@ -133,12 +130,9 @@ export default {
                 (answer) => answer.beer_id === beer.id
               );
 
-              // @todo should not be possible with more answers than number of players
-              // Make sure we can change this to === later
               return {
                 ...beer,
-                finished:
-                  answers.length === game.players.length * game.beers.length,
+                finished: answers.length === game.players.length,
               };
             });
 

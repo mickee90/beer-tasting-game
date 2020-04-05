@@ -10,12 +10,12 @@
 
 <script>
 import store from "../store/index";
-import router from "../router/index";
+// import router from "../router/index";
 
 export default {
   data() {
     return {
-      game: null
+      game: null,
     };
   },
   apollo: {
@@ -23,7 +23,7 @@ export default {
       query: require("../graphql/queries/getGame.gql"),
       variables() {
         return {
-          id: store.getters.getGame.id
+          id: store.getters.getGame.id,
         };
       },
       update(data) {
@@ -34,19 +34,20 @@ export default {
           document: require("../graphql/subscriptions/subscribeGame.gql"),
           variables() {
             return {
-              id: store.getters.getGame.id
+              id: store.getters.getGame.id,
             };
           },
           updateQuery: (previous, { subscriptionData }) => {
             if (subscriptionData.data.game.finished === true) {
-              router.push({ name: "Scoreboard" });
+              store.dispatch("finalizeGame");
+              // router.push({ name: "Scoreboard" });
             }
 
             return { ...subscriptionData.data };
-          }
-        }
-      ]
-    }
-  }
+          },
+        },
+      ],
+    },
+  },
 };
 </script>

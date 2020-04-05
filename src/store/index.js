@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersistance from "vuex-persist";
 import apolloClient from "../apollo";
+import router from "../router/index";
 
 const VuexPersist = new VuexPersistance({
   key: "vuex-beer-tasting-game",
@@ -16,6 +17,7 @@ const game_structure = {
   game_master_name: null,
   started: false,
   finished: false,
+  pin_code: null,
   ua: null,
 };
 
@@ -122,6 +124,92 @@ export default new Vuex.Store({
 
       return true;
     },
+    async startGame({ dispatch }) {
+      const updatedGame = await dispatch("updateGame", { started: true });
+
+      if (!updatedGame) {
+        return false;
+      }
+
+      const updatedBeerOrder = await dispatch("updateBeerAnswersOrder");
+
+      if (!updatedBeerOrder) {
+        return false;
+      }
+
+      return true;
+    },
+    async updateBeerAnswersOrder({ commit, getters }) {
+      const game = getters.getGame;
+      const beers = getters.getBeers;
+      console.log("beers", beers);
+
+      const beerAnswers = await apolloClient
+        .query({
+          query: require("../graphql/queries/getBeerAnswers.gql"),
+          variables: {
+            game_id: game.id,
+          },
+        })
+        .then((res) => res.data.beer_answers)
+        .catch((err) => console.log(err));
+
+      if (!beerAnswers) {
+        return false;
+      }
+
+      console.group(beerAnswers);
+
+      const groupedAnswers = beerAnswers.reduce((acc, answer) => {
+        if (!acc[answer.beer_id]) {
+          acc[answer.beer_id] = [];
+        }
+
+        acc[answer.beer_id].push(answer);
+
+        return acc;
+      }, {});
+
+      console.group(groupedAnswers);
+      const numberArray = [];
+      for (var i = 1; i <= beers.length; i++) {
+        numberArray.push(i);
+      }
+      numberArray.sort(() => Math.random() - 0.5);
+
+      let updatedAnswers = Object.values(groupedAnswers)
+        .map((answers) => {
+          for (var k = 0; k < answers.length; k++) {
+            answers[k].sort_order = numberArray[k];
+            delete answers[k].__typename;
+          }
+
+          return answers;
+        })
+        .flat(1);
+
+      console.group(updatedAnswers);
+
+      const updatedBeerAnswers = await apolloClient
+        .mutate({
+          mutation: require("../graphql/mutations/upsertBeerAnswers.gql"),
+          variables: {
+            objects: updatedAnswers,
+          },
+        })
+        .then((res) => res.data.insert_beer_answers.returning)
+        .catch((err) => console.log(err));
+
+      if (!updatedBeerAnswers) {
+        return false;
+      }
+
+      console.log(updatedBeerAnswers);
+
+      commit("setBeerAnswers", updatedBeerAnswers);
+
+      return true;
+    },
     async updateGame({ commit, getters }, payload) {
       const game = await apolloClient
         .mutate({
@@ -165,28 +253,22 @@ export default new Vuex.Store({
 
       if (!everything) return;
 
-      const players = await everything.players.map((player) => {
-        const playerAnswers = everything.player_answers.filter(
-          (playerAnswer) => (playerAnswer.id = player.id)
-        );
+      const updatedGame = {
+        id: everything.id,
+        name: everything.name,
+        game_master_name: everything.game_master_name,
+        started: everything.started,
+        finished: everything.finished,
+        game_type_id: everything.game_type_id,
+        pin_code: everything.pin_code,
+      };
+      commit("setGame", updatedGame);
+      commit("setPlayers", [...everything.players]);
+      commit("setPlayerAnswers", [...everything.player_answers]);
+      commit("setBeers", [...everything.beers]);
+      commit("setBeerAnswers", [...everything.beer_answers]);
 
-        if (playerAnswers.length === 0) return;
-
-        const correct_answers = everything.beers.filter((beer) => {
-          return playerAnswers.find((answer) => {
-            return (
-              parseInt(answer.answer) === parseInt(beer.correct_answer) &&
-              answer.player_id === player.id
-            );
-          });
-        });
-        return { ...player, score: correct_answers.length * 3 };
-      });
-
-      commit("setPlayers", [...players]);
-      commit("setPlayerAnswers", { ...everything.player_answers });
-      commit("setBeers", { ...everything.beers });
-      commit("setBeerAnswers", { ...everything.beer_answers });
+      return true;
     },
     async storeBeers({ commit, getters }, payload) {
       const gameId = getters.getGame.id;
@@ -355,7 +437,11 @@ export default new Vuex.Store({
     },
     async storePlayerAnswer({ commit, getters, dispatch }, payload) {
       const game = getters.getGame;
+      const beers = getters.getBeers;
       let player = getters.getPlayer;
+
+      console.log("game", game);
+      console.log("beers", beers);
 
       if (player === undefined) {
         player = await dispatch("fetchLocalPlayer");
@@ -381,7 +467,19 @@ export default new Vuex.Store({
         return false;
       }
 
-      commit("addPlayerAnswers", [...answer_response.returning]);
+      const response_answer = answer_response.returning[0];
+      const answers = getters.getPlayerAnswers;
+      const existingIndex = answers.findIndex(
+        (answer) => answer.id === response_answer.id
+      );
+
+      if (existingIndex >= 0) {
+        answers.splice(existingIndex, 1, response_answer);
+      } else {
+        answers.push(response_answer);
+      }
+
+      commit("setPlayerAnswers", answers);
 
       return true;
     },
@@ -405,19 +503,38 @@ export default new Vuex.Store({
 
       return true;
     },
+    async finalizeGame({ dispatch }) {
+      const setEverything = await dispatch("fetchAndSetEverything");
+
+      if (!setEverything) return;
+
+      router.push({ name: "Scoreboard" });
+    },
     async setPlayerFinishGame({ getters, dispatch, commit }) {
+      const player_answers = getters.getPlayerAnswers;
+      const beers = getters.getBeers;
       let player = getters.getPlayer;
 
       if (player === undefined) {
         player = await dispatch("fetchLocalPlayer");
       }
 
+      const correct_answers = player_answers.filter((player_answer) => {
+        return beers.find((beer) => {
+          return (
+            parseInt(player_answer.answer) === parseInt(beer.correct_answer) &&
+            player_answer.player_id === player.id &&
+            player_answer.beer_id === beer.id
+          );
+        });
+      });
+
       const player_response = await apolloClient
         .mutate({
           mutation: require("../graphql/mutations/updatePlayer.gql"),
           variables: {
             id: player.id,
-            set: { finished: true },
+            set: { finished: true, score: correct_answers.length * 3 },
           },
         })
         .then((res) => res.data.player)

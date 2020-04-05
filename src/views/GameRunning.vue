@@ -19,7 +19,6 @@
         v-for="(beer, index) in beers"
         :key="beer.id"
         :beer="beer"
-        :beers="beers"
         :index="index + 1"
         :done="done"
         :currentBeer="currentBeer"
@@ -78,7 +77,7 @@ export default {
       this.$router.push({ name: "AwaitResults" });
     },
   },
-  async created() {
+  async mounted() {
     const game = this.$store.getters.getGame;
     const playerId = this.$store.getters.getPlayer.id;
 
@@ -102,9 +101,19 @@ export default {
     };
 
     this.beers = response.beers.map((beer) => {
-      beer.beer_answers = response.beer_answers.filter(
-        (beer_answer) => beer_answer.beer_id === beer.id
-      );
+      beer.beer_answers = response.beer_answers
+        .filter((beer_answer) => beer_answer.beer_id === beer.id)
+        .map((beer_answer1) => {
+          beer_answer1.beer = response.beers.find(
+            (beer) =>
+              // beer.id === beer_answer1.beer_id &&
+              beer.number === parseInt(beer_answer1.question_content)
+          );
+          return beer_answer1;
+        })
+        .sort((a, b) =>
+          a.sort_order > b.sort_order ? 1 : b.sort_order > a.sort_order ? -1 : 0
+        );
       return beer;
     });
 

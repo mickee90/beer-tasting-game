@@ -35,6 +35,7 @@ query getEverything($id: uuid!) {
       game_id
       id
       question_content
+      sort_order
     }
     player_answers {
       answer

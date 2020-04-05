@@ -1,0 +1,17 @@
+mutation upsertBeerAnswers($objects: [beer_answers_insert_input!]!) {
+  insert_beer_answers(
+    objects: $objects
+    on_conflict: {
+      constraint: beer_answers_game_id_beer_id_question_content_key
+      update_columns: sort_order
+    }
+  ) {
+    returning {
+      id
+      game_id
+      beer_id
+      question_content
+      sort_order
+    }
+  }
+}

@@ -8,7 +8,9 @@
         :key="player.id"
       >
         <div class="text-xl">
-          <div class="card-header">Player #{{ index + 1 }} - {{ player.name }}</div>
+          <div class="card-header">
+            Player #{{ index + 1 }} - {{ player.name }}
+          </div>
         </div>
       </div>
     </div>
@@ -17,11 +19,16 @@
       <BaseButton
         v-if="!gameAndPlayers.started && gameAndPlayers.players.length === 0"
         :disabled="true"
-      >Wait for players</BaseButton>
+        >Wait for players</BaseButton
+      >
 
-      <BaseButton v-else-if="!gameAndPlayers.started" @click="onStartGame">Start the game!</BaseButton>
+      <BaseButton v-else-if="!gameAndPlayers.started" @click="onStartGame"
+        >Start the game!</BaseButton
+      >
 
-      <BaseButton v-else @click="onGoToGame">The game is running. Check the status.</BaseButton>
+      <BaseButton v-else @click="onGoToGame"
+        >The game is running. Check the status.</BaseButton
+      >
     </div>
   </div>
 </template>
@@ -33,14 +40,12 @@ export default {
   data() {
     return {
       gameAndPlayers: null,
-      loading: 0
+      loading: 0,
     };
   },
   methods: {
     async onStartGame() {
-      const response = await this.$store.dispatch("updateGame", {
-        started: true
-      });
+      const response = await this.$store.dispatch("startGame");
 
       if (!response) {
         alert("Something went wrong. Try again");
@@ -51,17 +56,18 @@ export default {
     },
     onGoToGame() {
       this.$router.push({ name: "GameProgress" });
-    }
+    },
   },
   apollo: {
     gameAndPlayers: {
       query: require("../graphql/queries/getGameAndPlayers.gql"),
       variables() {
         return {
-          id: store.getters.getGame.id
+          id: store.getters.getGame.id,
         };
       },
       update(data) {
+        console.log("gameAndPlayers", data);
         return { ...data.game };
       },
       subscribeToMore: [
@@ -69,15 +75,15 @@ export default {
           document: require("../graphql/subscriptions/subscribeGameAndPlayers.gql"),
           variables() {
             return {
-              game_id: store.getters.getGame.id
+              game_id: store.getters.getGame.id,
             };
           },
           updateQuery: (previous, { subscriptionData }) => {
             return { ...subscriptionData.data };
-          }
-        }
-      ]
-    }
-  }
+          },
+        },
+      ],
+    },
+  },
 };
 </script>

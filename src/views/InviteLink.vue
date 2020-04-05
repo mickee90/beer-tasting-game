@@ -6,16 +6,19 @@
     <div v-if="game">
       <h1>Welcome to {{ game.name }}</h1>
 
-      <div v-if="game.started === true">Sorry but the game has already started...</div>
+      <div v-if="game.started === true">
+        Sorry but the game has already started...
+      </div>
       <div v-else-if="alreadyJoined === true">
         <div class="mb-5">Your game is already running.</div>
-        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue">Get back to the game</router-link>
+        <router-link :to="{ name: 'JoinGame' }" class="btn btn-blue"
+          >Get back to the game</router-link
+        >
       </div>
       <div class="mb-4" v-else>
-        <label
-          for="playerName"
-          class="block text-gray-700 font-bold mb-2"
-        >Enter your name to join the game</label>
+        <label for="playerName" class="block text-gray-700 font-bold mb-2"
+          >Enter your name to join the game</label
+        >
         <BaseInputText
           type="text"
           classes="text-center w-3/4"
@@ -24,7 +27,9 @@
           placeholder="Your name"
           required
         />
-        <BaseButton @click="onJoinGame" :disabled="disabled" classes="mt-4">Join the game</BaseButton>
+        <BaseButton @click="onJoinGame" :disabled="disabled" classes="mt-4"
+          >Join the game</BaseButton
+        >
       </div>
     </div>
   </div>
@@ -39,7 +44,7 @@ export default {
       playerName: "",
       loading: false,
       fetchGameError: false,
-      alreadyJoined: false
+      alreadyJoined: false,
     };
   },
   methods: {
@@ -56,12 +61,12 @@ export default {
       if (!response) return;
 
       this.$router.push({ name: "JoinGame" });
-    }
+    },
   },
   computed: {
     disabled() {
       return this.playerName.trim() === "";
-    }
+    },
   },
   async created() {
     this.loading = true;
@@ -75,25 +80,14 @@ export default {
       return;
     }
 
-    const game = await this.$apollo
-      .query({
-        query: require("../graphql/queries/getGame.gql"),
-        variables: {
-          id: hash
-        }
-      })
-      .then(res => res.data.game)
-      .catch(err => console.log(err));
+    const fetchEverything = this.$store.dispatch("fetchAndSetEverything", hash);
 
-    this.loading = false;
-
-    if (!game) {
+    if (!fetchEverything) {
       this.fetchGameError = true;
       return;
     }
 
-    this.game = game;
-    this.$store.commit("setGame", { ...game });
+    this.game = this.$store.getters.getGame;
 
     const currentKey = JSON.parse(localStorage.getItem("myBeerTastingGameKey"));
 
@@ -102,6 +96,6 @@ export default {
     } else if (currentKey !== null) {
       this.alreadyJoined = true;
     }
-  }
+  },
 };
 </script>
