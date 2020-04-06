@@ -27,8 +27,8 @@ export default {
       players: [],
     };
   },
-  async mounted() {
-    await this.$store.dispatch("setGameCompleted");
+  created() {
+    // await this.$store.dispatch("setGameCompleted");
 
     const players = this.$store.getters.getPlayers;
     this.players = players.sort((a, b) =>

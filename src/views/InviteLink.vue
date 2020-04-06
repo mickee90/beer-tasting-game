@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="fetchGameError">Somethings wrong with this link...</div>
-    <div v-if="loading">Loading...</div>
+    <!-- <div v-if="loading === true">Loading...</div> -->
 
     <div v-if="game">
       <h1>Welcome to {{ game.name }}</h1>

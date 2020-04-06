@@ -67,7 +67,6 @@ export default {
         };
       },
       update(data) {
-        console.log("gameAndPlayers", data);
         return { ...data.game };
       },
       subscribeToMore: [

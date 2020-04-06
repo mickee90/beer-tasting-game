@@ -113,7 +113,6 @@ export default new Vuex.Store({
           ) {
             dispatch("createGame", { ...payload });
           }
-          console.log(error);
         });
 
       if (!game) {
@@ -142,7 +141,6 @@ export default new Vuex.Store({
     async updateBeerAnswersOrder({ commit, getters }) {
       const game = getters.getGame;
       const beers = getters.getBeers;
-      console.log("beers", beers);
 
       const beerAnswers = await apolloClient
         .query({
@@ -203,8 +201,6 @@ export default new Vuex.Store({
       if (!updatedBeerAnswers) {
         return false;
       }
-
-      console.log(updatedBeerAnswers);
 
       commit("setBeerAnswers", updatedBeerAnswers);
 
@@ -437,11 +433,7 @@ export default new Vuex.Store({
     },
     async storePlayerAnswer({ commit, getters, dispatch }, payload) {
       const game = getters.getGame;
-      const beers = getters.getBeers;
       let player = getters.getPlayer;
-
-      console.log("game", game);
-      console.log("beers", beers);
 
       if (player === undefined) {
         player = await dispatch("fetchLocalPlayer");
@@ -504,11 +496,38 @@ export default new Vuex.Store({
       return true;
     },
     async finalizeGame({ dispatch }) {
-      const setEverything = await dispatch("fetchAndSetEverything");
+      const gameAndPlayers = await dispatch("fetchGameAndPlayers");
 
-      if (!setEverything) return;
+      if (!gameAndPlayers) return;
 
       router.push({ name: "Scoreboard" });
+    },
+    async fetchGameAndPlayers({ getters, commit }) {
+      const game = await apolloClient
+        .query({
+          query: require("../graphql/queries/getGameAndPlayers.gql"),
+          variables: {
+            id: getters.getGame.id,
+          },
+        })
+        .then((res) => res.data.game)
+        .catch((err) => console.log("error", err));
+
+      if (!game) return;
+
+      const updatedGame = {
+        id: game.id,
+        name: game.name,
+        game_master_name: game.game_master_name,
+        started: game.started,
+        finished: game.finished,
+        game_type_id: game.game_type_id,
+        pin_code: game.pin_code,
+      };
+      commit("setGame", updatedGame);
+      commit("setPlayers", game.players);
+
+      return true;
     },
     async setPlayerFinishGame({ getters, dispatch, commit }) {
       const player_answers = getters.getPlayerAnswers;
