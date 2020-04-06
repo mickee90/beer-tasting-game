@@ -235,6 +235,7 @@ export default new Vuex.Store({
       await dispatch("fetchAndSetEverything", game.id);
     },
     async fetchAndSetEverything({ commit, getters }, payload = null) {
+      console.log("fetchAndSetEverything");
       const game = getters.getGame;
       const gameId = payload === null ? game.id : payload;
       const everything = await apolloClient
@@ -249,6 +250,8 @@ export default new Vuex.Store({
 
       if (!everything) return;
 
+      console.log(everything);
+
       const updatedGame = {
         id: everything.id,
         name: everything.name,
@@ -258,6 +261,7 @@ export default new Vuex.Store({
         game_type_id: everything.game_type_id,
         pin_code: everything.pin_code,
       };
+      console.log(updatedGame);
       commit("setGame", updatedGame);
       commit("setPlayers", [...everything.players]);
       commit("setPlayerAnswers", [...everything.player_answers]);

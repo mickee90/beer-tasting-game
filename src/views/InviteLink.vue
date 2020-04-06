@@ -80,7 +80,10 @@ export default {
       return;
     }
 
-    const fetchEverything = this.$store.dispatch("fetchAndSetEverything", hash);
+    const fetchEverything = await this.$store.dispatch(
+      "fetchAndSetEverything",
+      hash
+    );
 
     if (!fetchEverything) {
       this.fetchGameError = true;

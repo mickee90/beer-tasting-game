@@ -15,6 +15,18 @@ import VueBarcode from "@chenfengyuan/vue-barcode";
 import VueCarousel from "@chenfengyuan/vue-carousel";
 import Clipboard from "v-clipboard";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faAngleDoubleDown,
+  faAngleDoubleUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+library.add(faAngleDoubleUp);
+library.add(faAngleDoubleDown);
+
+Vue.component("font-awesome-icon", FontAwesomeIcon);
+
 Vue.use(VueCarousel);
 Vue.component(VueBarcode.name, VueBarcode);
 
@@ -26,5 +38,5 @@ new Vue({
   router,
   store,
   apolloProvider,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

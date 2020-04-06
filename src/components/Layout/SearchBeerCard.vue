@@ -25,7 +25,18 @@
         <div :class="`beerContentHeight-${index}`">
           <strong class="block" v-text="brewery.country_name"></strong>
           <slot>{{ beer.beer_description }}</slot>
-          <div class="expand-btn" @click="onExpand" v-text="expandText"></div>
+          <div class="expand-btn" @click="onExpand" v-if="expandableText">
+            <font-awesome-icon
+              icon="angle-double-up"
+              v-if="expanded === true"
+              class="text-2xl"
+            />
+            <font-awesome-icon
+              icon="angle-double-down"
+              class="text-2xl"
+              v-else
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -48,11 +59,8 @@ export default {
     cardHeight() {
       return this.expanded === true ? "h-auto" : "h-40";
     },
-    expandText() {
-      if (!this.toHigh) {
-        return "";
-      }
-      return this.expanded === true ? "Collapse" : "Expand";
+    expandableText() {
+      return this.toHigh;
     },
   },
   methods: {

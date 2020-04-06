@@ -5,7 +5,7 @@
   >
     <div class="flex mb-5">
       <div class="w-1/3 flex">
-        <img :src="`${beer.image}`" :alt="beer.name" class="thumbnail" />
+        <img :src="`${beer.image}`" :alt="beer.name" class="mb-auto mx-auto" />
       </div>
       <div class="w-2/3 text-left pr-5">
         <div class="flex" :class="`beerTitleHeight-${index}`">
@@ -25,7 +25,18 @@
         <div :class="`beerContentHeight-${index}`">
           <strong class="block" v-text="beer.country"></strong>
           <slot>{{ beer.description }}</slot>
-          <div class="expand-btn" @click="onExpand" v-text="expandText"></div>
+          <div class="expand-btn" @click="onExpand" v-if="expandableText">
+            <font-awesome-icon
+              icon="angle-double-up"
+              v-if="expanded === true"
+              class="text-2xl"
+            />
+            <font-awesome-icon
+              icon="angle-double-down"
+              class="text-2xl"
+              v-else
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -48,11 +59,8 @@ export default {
     cardHeight() {
       return this.expanded === true ? "h-auto" : "h-40";
     },
-    expandText() {
-      if (!this.toHigh) {
-        return "";
-      }
-      return this.expanded === true ? "Collapse" : "Expand";
+    expandableText() {
+      return this.toHigh;
     },
   },
   methods: {
