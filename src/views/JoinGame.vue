@@ -1,5 +1,8 @@
 <template>
-  <div v-if="!loading" class="px-8">
+  <div class="px-8" v-if="gameAndPlayers === null">
+    Loading...
+  </div>
+  <div class="px-8" v-else>
     <div v-if="gameAndPlayers.finished === true">
       <h1>The game has ended</h1>
       <router-link :to="{ name: 'Scoreboard' }" class="btn btn-blue"
@@ -40,7 +43,6 @@ export default {
   data() {
     return {
       gameAndPlayers: null,
-      loading: 0,
     };
   },
   methods: {

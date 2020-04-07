@@ -1,9 +1,11 @@
 <template>
   <div>
-    <div v-if="fetchGameError">Somethings wrong with this link...</div>
-    <!-- <div v-if="loading === true">Loading...</div> -->
+    <div v-if="fetchGameError === true">Somethings wrong with this link...</div>
 
-    <div v-if="game">
+    <div v-if="game === null">
+      Loading...
+    </div>
+    <div v-else>
       <h1>Welcome to {{ game.name }}</h1>
 
       <div v-if="game.started === true">
@@ -42,7 +44,6 @@ export default {
       game_id: null,
       game: null,
       playerName: "",
-      loading: false,
       fetchGameError: false,
       alreadyJoined: false,
     };
@@ -69,13 +70,11 @@ export default {
     },
   },
   async created() {
-    this.loading = true;
     this.$store.dispatch("resetStore");
 
     const hash = this.$route.query.hash;
 
     if (!hash) {
-      this.loading = false;
       this.fetchGameError = true;
       return;
     }
