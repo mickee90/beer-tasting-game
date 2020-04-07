@@ -42,7 +42,7 @@ import BeerTypeCard from "../components/Layout/BeerTypeCard";
 export default {
   data() {
     return {
-      gameTypeId: 1
+      gameTypeId: 1,
     };
   },
   methods: {
@@ -55,7 +55,7 @@ export default {
       }
 
       const response = await this.$store.dispatch("updateGame", {
-        game_type_id: this.gameTypeId
+        game_type_id: this.gameTypeId,
       });
 
       if (!response) {
@@ -64,15 +64,15 @@ export default {
       }
 
       this.$router.push({ name: "ChooseBeers" });
-    }
+    },
   },
   computed: {
     disabled() {
       return !(this.gameTypeId > 0);
-    }
+    },
   },
   components: {
-    BeerTypeCard
-  }
+    BeerTypeCard,
+  },
 };
 </script>

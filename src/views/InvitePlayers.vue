@@ -21,7 +21,10 @@
     </div>
 
     <div class="w-100 text-center mx-auto my-2 text-lg mb-5">
-      3. Or let them enter pin code: {{ game.pin_code }}
+      3. Or let them enter pin code:
+      <div class="border-2 border-gray-400 inline-block px-4 py-2 rounded-full">
+        {{ game.pin_code }}
+      </div>
     </div>
 
     <router-link :to="{ name: 'StartGame' }" class="btn btn-blue">

@@ -30,17 +30,36 @@
         >The game is running. Check the status.</BaseButton
       >
     </div>
+
+    <div class="mt-10 flex">
+      <div class="flex-1 m-auto">
+        <div
+          class="border-2 border-gray-400 inline-block px-4 py-2 rounded-full"
+        >
+          {{ gameAndPlayers.pin_code }}
+        </div>
+      </div>
+      <div class="flex-1 border-l-2 p-4">
+        <VueQrcode
+          :value="gameUrl"
+          :options="{ width: 80 }"
+          class="mx-auto"
+        ></VueQrcode>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import store from "../store/index";
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 
 export default {
   data() {
     return {
       gameAndPlayers: null,
       loading: 0,
+      gameUrl: null,
     };
   },
   methods: {
@@ -84,5 +103,14 @@ export default {
       ],
     },
   },
+  created() {
+    this.gameUrl =
+      process.env.VUE_APP_HOST_NAME +
+      this.$router.resolve({
+        name: "InviteLink",
+      }).href +
+      `?hash=${this.game.id}`;
+  },
+  components: { VueQrcode },
 };
 </script>

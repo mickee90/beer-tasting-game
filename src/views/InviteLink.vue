@@ -28,6 +28,7 @@
           v-model="playerName"
           placeholder="Your name"
           required
+          @keyup.enter="onJoinGame"
         />
         <BaseButton @click="onJoinGame" :disabled="disabled" classes="mt-4"
           >Join the game</BaseButton
@@ -50,6 +51,10 @@ export default {
   },
   methods: {
     onJoinGame() {
+      if (this.disabled === true) {
+        return;
+      }
+
       const playerName = this.playerName.trim();
 
       if (playerName === "") {

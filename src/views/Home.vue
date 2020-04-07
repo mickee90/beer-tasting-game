@@ -15,11 +15,10 @@
           placeholder="Enter pin code"
           classes="w-3/4 text-center"
           v-model="pinCode"
+          @keyup.enter="findGame"
         />
 
-        <BaseButton @click="findGame" :disabled="false" classes="mt-5">
-          Find Game</BaseButton
-        >
+        <BaseButton @click="findGame" classes="mt-5"> Find Game</BaseButton>
       </div>
     </div>
     <div v-else>

@@ -11,6 +11,7 @@
         v-model="name"
         placeholder="Name the game"
         required
+        @keyup.enter="onStoreGame"
       />
     </div>
     <div class="mb-6">
@@ -23,6 +24,7 @@
         v-model="game_master_name"
         placeholder="Your name"
         required
+        @keyup.enter="onStoreGame"
       />
     </div>
     <BaseButton @click="onStoreGame" :disabled="disabled">Next</BaseButton>
@@ -44,6 +46,10 @@ export default {
   },
   methods: {
     async onStoreGame() {
+      if (this.disabled === true) {
+        return;
+      }
+
       const response = await this.$store.dispatch("createGame", {
         name: this.name,
         game_master_name: this.game_master_name,
